@@ -1,0 +1,10 @@
+USAGE:
+    ./plazza <MULTIPLIER> <NBCOOK> <TIME>
+
+DESCRIPTION
+    MULTIPLIER
+        A multiplier for the cooking time of the pizzas.
+    NBCOOK
+        The number of cooks per kitchen.
+    TIME
+        Time in milliseconds, used by the kitchen stock to replace ingredients.

@@ -12,6 +12,7 @@ set(MAIN
 )
 
 set(SRCS
+    src/Plazza.cpp
 )
 
 set(HEADERS

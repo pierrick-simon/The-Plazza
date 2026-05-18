@@ -5,9 +5,18 @@
 ** Main
 */
 
+#include <iostream>
 #include "Plazza.hpp"
+#include "Exception.hpp"
 
-int main(void)
+int main(int ac, char **av)
 {
+    std::queue<std::string> args(std::deque<std::string>(av + 1, av + ac));
+    try {
+        auto plazza = Plazza::Plazza(args);
+    } catch (Plazza::PlazzaException &e) {
+        std::cerr << e.what() << std::endl;
+        return Plazza::EPIERROR;
+    }
     return Plazza::EPISUCCESS;
 }
