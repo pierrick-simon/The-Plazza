@@ -26,6 +26,42 @@ namespace Plazza {
         public:
             WrongArgsException() : PlazzaException("Wrongs Args.") {};
     };
+
+    class ShellException : public PlazzaException {
+        public:
+            ShellException(std::string str)
+                : PlazzaException("Shell Error: " + str) {};
+    };
+
+    class OrderException : public ShellException {
+        public:
+            OrderException(std::string str)
+                : ShellException("Order Error: " + str) {};
+    };
+
+    class WrongPizzaTypeException : public OrderException {
+        public:
+            WrongPizzaTypeException(std::string str)
+                : OrderException("The pizza " + str + " is not available.") {};
+    };
+
+    class WrongPizzaSizeException : public OrderException {
+        public:
+            WrongPizzaSizeException(std::string str)
+                : OrderException("The size " + str + " doesn't exist.") {};
+    };
+
+    class NotValidNumberException : public OrderException {
+        public:
+            NotValidNumberException(std::string str)
+                : OrderException("The number " + str + " is not valid.") {};
+    };
+
+    class InvalidOrderException : public OrderException {
+        public:
+            InvalidOrderException()
+                : OrderException("Invalide Order. TYPE SIZE NUMBER.") {};
+    };
 };
 
 #endif

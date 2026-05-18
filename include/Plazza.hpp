@@ -11,6 +11,7 @@
     #include <string>
     #include <string_view>
     #include <vector>
+    #include <unordered_map>
 
 namespace Plazza {
     constexpr int EPISUCCESS = 0;
@@ -18,6 +19,8 @@ namespace Plazza {
     constexpr int SKIP = -1;
     constexpr int NBARGS = 3;
     constexpr std::string_view HELP = "public/help.txt";
+
+    using Pizza = std::pair<Plazza::PizzaType, Plazza::PizzaSize>;
 
     class Plazza {
         public:
@@ -28,14 +31,38 @@ namespace Plazza {
                 RESTOCK
             };
 
+            enum PizzaType
+            {
+                Regina = 1,
+                Margarita = 2,
+                Americana = 4,
+                Fantasia = 8
+            };
+
+            enum PizzaSize
+            {
+                S = 1,
+                M = 2,
+                L = 4,
+                XL = 8,
+                XXL = 16
+            };
+
             Plazza(std::vector<std::string>);
 
             void showHelp();
 
         private:
+            std::size_t parseNumber(std::string strNb);
+            std::vector<Pizza> parsePizzaOrder(std::string order);
+            std::vector<Pizza> parsePizzaOrders(std::string);
+
             double _multiplier;
             std::size_t _nbCook;
             double _restock;
+
+            static const std::unordered_map<std::string, PizzaType> _pizzaType;
+            static const std::unordered_map<std::string, PizzaSize> _pizzaSize;
     };
 };
 
