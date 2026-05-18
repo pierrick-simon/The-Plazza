@@ -1,0 +1,96 @@
+/*
+** EPITECH PROJECT, 2026
+** The-Plazza
+** File description:
+** tests_parse_order
+*/
+
+#include <criterion/criterion.h>
+#include <criterion/redirect.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <iostream>
+
+#include "Exception.hpp"
+#include "Plazza.hpp"
+
+static void redirect_all_std()
+{
+    cr_redirect_stdout();
+    cr_redirect_stderr();
+}
+
+static const char *testErrorMain(std::string line)
+{
+    try {
+        Plazza::Plazza plazza({"1", "1", "1"});
+        plazza.parsePizzaOrders(line);
+    } catch (Plazza::PlazzaException &e) {
+        std::string *tmp = new std::string(e.what());
+        return tmp->c_str();
+    }
+    return "No Error";
+}
+
+static bool testSuccessMain(std::string line, std::vector<Plazza::Plazza::Pizza> test)
+{
+    try {
+        Plazza::Plazza plazza({"1", "1", "1"});
+        auto pizzas = plazza.parsePizzaOrders(line);
+        cr_assert_eq(pizzas.size(), test.size());
+        for (std::size_t i = 0; i < pizzas.size(); i++) {
+            cr_assert_eq(pizzas[i].first, test[i].first);
+            cr_assert_eq(pizzas[i].second, test[i].second);
+        }
+    } catch (Plazza::PlazzaException &e) {
+        std::string *tmp = new std::string(e.what());
+        std::cout << tmp->c_str() << std::endl;
+        return false;
+    }
+    return true;
+}
+
+Test(PizzaOrder, InvlaidOrder)
+{
+    cr_assert_str_eq(testErrorMain("Hello World!"), "Plazza Error: Shell Error: Order Error: Invalide Order. TYPE SIZE NUMBER.");
+}
+
+Test(PizzaOrder, WrongPizzaType)
+{
+    cr_assert_str_eq(testErrorMain("Chicken S x1"), "Plazza Error: Shell Error: Order Error: The pizza chicken is not available.");
+}
+
+Test(PizzaOrder, WrongPizzaSize)
+{
+    cr_assert_str_eq(testErrorMain("regina V x1"), "Plazza Error: Shell Error: Order Error: The size V doesn't exist.");
+}
+
+Test(PizzaOrder, NotValidNumber)
+{
+    cr_assert_str_eq(testErrorMain("regina M x0"), "Plazza Error: Shell Error: Order Error: The number x0 is not valid.");
+}
+
+Test(PizzaOrder, SingleOrder)
+{
+    std::vector<Plazza::Plazza::Pizza> test = {
+        std::make_pair(Plazza::Plazza::Fantasia, Plazza::Plazza::M),
+        std::make_pair(Plazza::Plazza::Fantasia, Plazza::Plazza::M),
+        std::make_pair(Plazza::Plazza::Fantasia, Plazza::Plazza::M),
+    };
+
+    cr_assert(testSuccessMain("fantasia M x3", test));
+}
+
+Test(PizzaOrder, MultipleOrder)
+{
+    std::vector<Plazza::Plazza::Pizza> test = {
+        std::make_pair(Plazza::Plazza::Regina, Plazza::Plazza::XXL),
+        std::make_pair(Plazza::Plazza::Regina, Plazza::Plazza::XXL),
+        std::make_pair(Plazza::Plazza::Fantasia, Plazza::Plazza::M),
+        std::make_pair(Plazza::Plazza::Fantasia, Plazza::Plazza::M),
+        std::make_pair(Plazza::Plazza::Fantasia, Plazza::Plazza::M),
+        std::make_pair(Plazza::Plazza::Margarita, Plazza::Plazza::S),
+    };
+
+    cr_assert(testSuccessMain("regina XXL x2; fantasia M x3; margarita S x1", test));
+}

@@ -42,11 +42,14 @@ find_library(CRITERION criterion REQUIRED)
 set(SRCS_TESTS
     tests/tests_init.cpp
     tests/tests_parsing.cpp
+    tests/tests_parse_order.cpp
 )
 
 add_executable(tests_run_bin EXCLUDE_FROM_ALL ${SRCS_TESTS} ${SRCS})
+
 target_compile_options(tests_run_bin PRIVATE --coverage)
-target_link_libraries(tests_run_bin criterion --coverage sfml-graphics sfml-window sfml-system config++)
+target_link_options(tests_run_bin PRIVATE --coverage)
+target_link_libraries(tests_run_bin criterion )
 
 add_custom_target(tests_run
     COMMAND find ${CMAKE_BINARY_DIR} -name "*.gcda" -delete

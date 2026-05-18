@@ -18,6 +18,15 @@ then
 elif [ $1 == "installscript" ]
 then
     sudo cp cbuild /usr/bin/
+elif [ $1 == "--coverage" ]
+then
+    make tests_run -C $BUILD_DIR -j && \
+    gcovr \
+        -r . \
+        --object-directory $BUILD_DIR \
+        --exclude tests/ \
+        --gcov-executable "llvm-cov gcov" \
+        --gcov-ignore-errors=no_working_dir_found
 else
     make $1 -C $BUILD_DIR -j
 fi

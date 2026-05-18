@@ -8,6 +8,8 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <algorithm>
+#include <iostream>
 #include "Plazza.hpp"
 #include "Exception.hpp"
 
@@ -32,16 +34,17 @@ namespace Plazza {
 
     std::size_t Plazza::parseNumber(std::string strNb)
     {
-        std::stringstream nbStream(strNb);
+        if (strNb.empty() || strNb.front() != 'x')
+            throw NotValidNumberException(strNb);
+        std::stringstream nbStream(strNb.substr(1));
         std::size_t nb;
-        std::string x;
-        nbStream >> x >> nb;
-        if (nbStream.fail() || !nbStream.eof() || x != "x" || nb == 0)
+        nbStream >> nb;
+        if (nbStream.fail() || !nbStream.eof() || nb == 0)
             throw NotValidNumberException(strNb);
         return nb;
     }
 
-    std::vector<Pizza> Plazza::parsePizzaOrder(std::string order)
+    std::vector<Plazza::Pizza> Plazza::parsePizzaOrder(std::string order)
     {
         std::string type;
         std::string size;
@@ -50,9 +53,13 @@ namespace Plazza {
         tmp >> type >> size >> strNb;
         if (tmp.fail() || !tmp.eof())
             throw InvalidOrderException();
+        std::transform(type.begin(), type.end(), type.begin(),
+            [](unsigned char c) {return std::tolower(c);});
         auto findType = _pizzaType.find(type);
         if (findType == _pizzaType.end())
             throw WrongPizzaTypeException(type);
+        std::transform(size.begin(), size.end(), size.begin(),
+            [](unsigned char c) {return std::toupper(c);});
         auto findSize = _pizzaSize.find(size);
         if (findSize == _pizzaSize.end())
             throw WrongPizzaSizeException(size);
@@ -68,7 +75,7 @@ namespace Plazza {
         return pizzas;
     }
 
-    std::vector<Pizza> Plazza::parsePizzaOrders(std::string line)
+    std::vector<Plazza::Pizza> Plazza::parsePizzaOrders(std::string line)
     {
         std::vector<Pizza> pizza;
         std::stringstream orders(line);
@@ -80,7 +87,7 @@ namespace Plazza {
         for (auto order: seglist) {
             try {
                 auto newPizza = parsePizzaOrder(order);
-                pizza.emplace(pizza.end(), newPizza.begin(), newPizza.end());
+                pizza.insert(pizza.end(), newPizza.begin(), newPizza.end());
             } catch (OrderException &e) {
                 throw e;
             }
@@ -108,7 +115,7 @@ namespace Plazza {
     const std::unordered_map<std::string, Plazza::PizzaSize>
         Plazza::_pizzaSize =
     {
-        {"s", Plazza::PizzaSize::S},
+        {"S", Plazza::PizzaSize::S},
         {"M", Plazza::PizzaSize::M},
         {"L", Plazza::PizzaSize::L},
         {"XL", Plazza::PizzaSize::XL},

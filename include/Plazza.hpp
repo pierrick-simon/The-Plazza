@@ -20,8 +20,6 @@ namespace Plazza {
     constexpr int NBARGS = 3;
     constexpr std::string_view HELP = "public/help.txt";
 
-    using Pizza = std::pair<Plazza::PizzaType, Plazza::PizzaSize>;
-
     class Plazza {
         public:
 
@@ -48,14 +46,16 @@ namespace Plazza {
                 XXL = 16
             };
 
+            using Pizza = std::pair<PizzaType, PizzaSize>;
+
             Plazza(std::vector<std::string>);
+            std::vector<Pizza> parsePizzaOrders(std::string);
 
             void showHelp();
 
         private:
             std::size_t parseNumber(std::string strNb);
             std::vector<Pizza> parsePizzaOrder(std::string order);
-            std::vector<Pizza> parsePizzaOrders(std::string);
 
             double _multiplier;
             std::size_t _nbCook;
