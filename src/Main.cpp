@@ -14,6 +14,7 @@ int main(int ac, char **av)
     std::vector<std::string> args(std::vector<std::string>(av + 1, av + ac));
     try {
         auto plazza = Plazza::Plazza(args);
+        plazza.run();
     } catch (Plazza::PlazzaException &e) {
         std::cerr << e.what() << std::endl;
         return Plazza::EPIERROR;

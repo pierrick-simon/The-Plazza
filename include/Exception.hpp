@@ -62,6 +62,11 @@ namespace Plazza {
             InvalidOrderException()
                 : OrderException("Invalide Order. TYPE SIZE NUMBER.") {};
     };
+
+    class WrongCommandException : public ShellException {
+        public:
+            WrongCommandException() : ShellException("Wrong Command!") {};
+    };
 };
 
 #endif

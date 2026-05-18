@@ -9,7 +9,6 @@
 #include <criterion/redirect.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <iostream>
 
 #include "Exception.hpp"
 #include "Plazza.hpp"
@@ -44,7 +43,6 @@ static bool testSuccessMain(std::string line, std::vector<Plazza::Plazza::Pizza>
         }
     } catch (Plazza::PlazzaException &e) {
         std::string *tmp = new std::string(e.what());
-        std::cout << tmp->c_str() << std::endl;
         return false;
     }
     return true;

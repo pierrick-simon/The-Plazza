@@ -12,6 +12,7 @@
     #include <string_view>
     #include <vector>
     #include <unordered_map>
+    #include <functional>
 
 namespace Plazza {
     constexpr int EPISUCCESS = 0;
@@ -51,15 +52,23 @@ namespace Plazza {
             Plazza(std::vector<std::string>);
             std::vector<Pizza> parsePizzaOrders(std::string);
 
+            void run();
+
             void showHelp();
 
         private:
             std::size_t parseNumber(std::string strNb);
             std::vector<Pizza> parsePizzaOrder(std::string order);
 
+            void parseCommands(std::string command);
+            bool getCommand(std::string);
+            void newCommand(std::string line);
+
             double _multiplier;
             std::size_t _nbCook;
             double _restock;
+
+            std::unordered_map<std::string, std::function<void()>> _commands;
 
             static const std::unordered_map<std::string, PizzaType> _pizzaType;
             static const std::unordered_map<std::string, PizzaSize> _pizzaSize;

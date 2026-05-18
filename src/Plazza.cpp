@@ -9,7 +9,6 @@
 #include <fstream>
 #include <iomanip>
 #include <algorithm>
-#include <iostream>
 #include "Plazza.hpp"
 #include "Exception.hpp"
 
@@ -93,6 +92,61 @@ namespace Plazza {
             }
         }
         return pizza;
+    }
+
+    void Plazza::newCommand(std::string line)
+    {
+        try {
+            auto newCommand = parsePizzaOrders(line);
+        } catch (OrderException &e) {
+            throw e;
+        }
+    }
+
+    void Plazza::parseCommands(std::string command)
+    {
+        auto iter = _commands.find(command);
+
+        if (iter == _commands.end())
+            throw WrongCommandException();
+        iter->second();
+    }
+
+    bool Plazza::getCommand(std::string str)
+    {
+        std::string command;
+        std::istringstream stream(str);
+        stream >> command;
+        bool exist = false;
+
+        try {
+        if (!stream.eof() || stream.fail())
+            newCommand(str);
+        else if (command == "exit")
+            exist = true;
+        else
+            parseCommands(command);
+        } catch (ShellException &e) {
+            throw e;
+        }
+        return exist;
+    }
+
+    void Plazza::run()
+    {
+        std::string str;
+        std::cout << "> ";
+        bool exist = false;
+    
+        while (!exist && std::getline(std::cin, str)) {
+            try {
+                exist = getCommand(str);
+            } catch (ShellException &e) {
+                std::cerr << e.what() << std::endl;
+            }
+            if (!exist)
+                std::cout << "> ";
+        }
     }
 
     void Plazza::showHelp()
