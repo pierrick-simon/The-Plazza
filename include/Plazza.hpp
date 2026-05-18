@@ -10,7 +10,7 @@
 
     #include <string>
     #include <string_view>
-    #include <queue>
+    #include <vector>
 
 namespace Plazza {
     constexpr int EPISUCCESS = 0;
@@ -21,14 +21,21 @@ namespace Plazza {
 
     class Plazza {
         public:
-            Plazza(std::queue<std::string>);
+
+            enum Args {
+                MULTIPLIER,
+                NBCOOK,
+                RESTOCK
+            };
+
+            Plazza(std::vector<std::string>);
 
             void showHelp();
 
         private:
             double _multiplier;
-            int _nbCook;
-            int _restock;
+            std::size_t _nbCook;
+            double _restock;
     };
 };
 

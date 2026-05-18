@@ -11,7 +11,7 @@
 
 int main(int ac, char **av)
 {
-    std::queue<std::string> args(std::deque<std::string>(av + 1, av + ac));
+    std::vector<std::string> args(std::vector<std::string>(av + 1, av + ac));
     try {
         auto plazza = Plazza::Plazza(args);
     } catch (Plazza::PlazzaException &e) {
