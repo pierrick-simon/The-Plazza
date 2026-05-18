@@ -30,7 +30,6 @@ if (ENABLE_ASAN)
 endif()
 
 add_executable(plazza ${MAIN} ${SRCS})
-target_link_libraries(plazza sfml-graphics sfml-window sfml-system config++)
 
 target_compile_options(plazza PRIVATE)
 
@@ -42,6 +41,7 @@ find_library(CRITERION criterion REQUIRED)
 
 set(SRCS_TESTS
     tests/tests_init.cpp
+    tests/tests_parsing.cpp
 )
 
 add_executable(tests_run_bin EXCLUDE_FROM_ALL ${SRCS_TESTS} ${SRCS})
