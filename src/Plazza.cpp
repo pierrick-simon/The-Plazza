@@ -29,6 +29,7 @@ namespace Plazza {
             || stream2.fail() || !stream2.eof() || _nbCook == 0
             || stream3.fail() || !stream3.eof() || _restock < 0)
             throw WrongArgsException();
+        _commands["status"] = [this]() {status();};
     }
 
     std::size_t Plazza::parseNumber(std::string strNb)
@@ -147,6 +148,10 @@ namespace Plazza {
             if (!exist)
                 std::cout << "> ";
         }
+    }
+
+    void Plazza::status() 
+    {
     }
 
     void Plazza::showHelp()
