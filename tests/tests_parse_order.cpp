@@ -31,15 +31,18 @@ static const char *testErrorMain(std::string line)
     return "No Error";
 }
 
-static bool testSuccessMain(std::string line, std::vector<Plazza::Plazza::Pizza> test)
+static bool testSuccessMain(std::string line, std::map<Plazza::Plazza::Pizza, std::size_t> test)
 {
     try {
         Plazza::Plazza plazza({"1", "1", "1"});
         auto pizzas = plazza.parsePizzaOrders(line);
         cr_assert_eq(pizzas.size(), test.size());
-        for (std::size_t i = 0; i < pizzas.size(); i++) {
-            cr_assert_eq(pizzas[i].first, test[i].first);
-            cr_assert_eq(pizzas[i].second, test[i].second);
+        auto iterPizza = pizzas.begin();
+        auto iterTest = test.begin();
+        for (; iterPizza != pizzas.end() && iterTest != test.end(); iterPizza++, iterTest++) {
+            cr_assert_eq(iterPizza->first.first, iterTest->first.first);
+            cr_assert_eq(iterPizza->first.second, iterTest->first.second);
+            cr_assert_eq(iterPizza->second, iterTest->second);
         }
     } catch (Plazza::PlazzaException &e) {
         std::string *tmp = new std::string(e.what());
@@ -70,10 +73,8 @@ Test(PizzaOrder, NotValidNumber)
 
 Test(PizzaOrder, SingleOrder)
 {
-    std::vector<Plazza::Plazza::Pizza> test = {
-        std::make_pair(Plazza::Plazza::Fantasia, Plazza::Plazza::M),
-        std::make_pair(Plazza::Plazza::Fantasia, Plazza::Plazza::M),
-        std::make_pair(Plazza::Plazza::Fantasia, Plazza::Plazza::M),
+    std::map<Plazza::Plazza::Pizza, std::size_t> test = {
+        {std::make_pair(Plazza::Plazza::Fantasia, Plazza::Plazza::M), 3}
     };
 
     cr_assert(testSuccessMain("fantasia M x3", test));
@@ -81,14 +82,11 @@ Test(PizzaOrder, SingleOrder)
 
 Test(PizzaOrder, MultipleOrder)
 {
-    std::vector<Plazza::Plazza::Pizza> test = {
-        std::make_pair(Plazza::Plazza::Regina, Plazza::Plazza::XXL),
-        std::make_pair(Plazza::Plazza::Regina, Plazza::Plazza::XXL),
-        std::make_pair(Plazza::Plazza::Fantasia, Plazza::Plazza::M),
-        std::make_pair(Plazza::Plazza::Fantasia, Plazza::Plazza::M),
-        std::make_pair(Plazza::Plazza::Fantasia, Plazza::Plazza::M),
-        std::make_pair(Plazza::Plazza::Margarita, Plazza::Plazza::S),
+    std::map<Plazza::Plazza::Pizza, std::size_t> test = {
+        {std::make_pair(Plazza::Plazza::Regina, Plazza::Plazza::XXL), 12},
+        {std::make_pair(Plazza::Plazza::Fantasia, Plazza::Plazza::M), 3},
+        {std::make_pair(Plazza::Plazza::Margarita, Plazza::Plazza::S), 1},
     };
 
-    cr_assert(testSuccessMain("regina XXL x2; fantasia M x3; margarita S x1", test));
+    cr_assert(testSuccessMain("regina XXL x2; fantasia M x3; margarita S x1; regina XXL x10", test));
 }

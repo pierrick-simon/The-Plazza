@@ -44,7 +44,26 @@ namespace Plazza {
         return nb;
     }
 
-    std::vector<Plazza::Pizza> Plazza::parsePizzaOrder(std::string order)
+    void Plazza::addNewPizza(Pizza pizza, std::map<Pizza, std::size_t> &pizzas,
+        std::string strNb)
+    {
+        try {
+            std::size_t nb = parseNumber(strNb);
+            for (auto &tmp: pizzas) {
+                if (tmp.first.first == pizza.first
+                    && tmp.first.second == pizza.second) {
+                    tmp.second += nb;
+                    return;
+                }
+            }
+            pizzas.insert(std::make_pair(pizza, nb));
+        } catch (NotValidNumberException &e) {
+            throw e;
+        }
+    }
+
+    void Plazza::parsePizzaOrder(
+        std::string order, std::map<Pizza, std::size_t> &pizzas)
     {
         std::string type;
         std::string size;
@@ -63,21 +82,17 @@ namespace Plazza {
         auto findSize = _pizzaSize.find(size);
         if (findSize == _pizzaSize.end())
             throw WrongPizzaSizeException(size);
-        std::vector<Pizza> pizzas;
         try {
-            std::size_t nb = parseNumber(strNb);
-            for (std::size_t i = 0; i < nb; i++)
-                pizzas.emplace_back(
-                    std::make_pair(findType->second, findSize->second));
+            addNewPizza(std::make_pair(findType->second, findSize->second),
+                pizzas, strNb);
         } catch (NotValidNumberException &e) {
             throw e;
         }
-        return pizzas;
     }
 
-    std::vector<Plazza::Pizza> Plazza::parsePizzaOrders(std::string line)
+    std::map<Plazza::Pizza, std::size_t> Plazza::parsePizzaOrders(std::string line)
     {
-        std::vector<Pizza> pizza;
+        std::map<Plazza::Pizza, std::size_t> pizzas;
         std::stringstream orders(line);
         std::string segment;
         std::vector<std::string> seglist;
@@ -86,13 +101,12 @@ namespace Plazza {
             seglist.push_back(segment);
         for (auto order: seglist) {
             try {
-                auto newPizza = parsePizzaOrder(order);
-                pizza.insert(pizza.end(), newPizza.begin(), newPizza.end());
+                parsePizzaOrder(order, pizzas);
             } catch (OrderException &e) {
                 throw e;
             }
         }
-        return pizza;
+        return pizzas;
     }
 
     void Plazza::newCommand(std::string line)
