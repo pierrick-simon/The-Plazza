@@ -14,6 +14,7 @@ set(MAIN
 set(SRCS
     src/Plazza.cpp
     src/Kitchen.cpp
+    src/Connect.cpp
 )
 
 set(HEADERS
