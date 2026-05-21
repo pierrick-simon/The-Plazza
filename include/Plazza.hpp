@@ -48,7 +48,25 @@ namespace Plazza {
                 XXL = 16
             };
 
+            enum IngredientType
+            {
+                DOUGH,
+                TOMATO,
+                GRUYERE,
+                HAM,
+                MUSHROOMS,
+                STEAK,
+                EGGPLANT,
+                GOAT_CHEESE,
+                CHIEF_LOVE,
+                NB_INGREDIENT
+            };
+
             using Pizza = std::pair<PizzaType, PizzaSize>;
+            using Ingredient = std::unordered_map<
+                Plazza::IngredientType, std::size_t>;
+            using Recipes = std::unordered_map<Plazza::PizzaType,
+                std::pair<Ingredient, std::size_t>>;
 
             Plazza(std::vector<std::string>);
             std::map<Pizza, std::size_t> parsePizzaOrders(std::string);

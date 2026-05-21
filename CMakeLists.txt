@@ -13,6 +13,7 @@ set(MAIN
 
 set(SRCS
     src/Plazza.cpp
+    src/Kitchen.cpp
 )
 
 set(HEADERS
