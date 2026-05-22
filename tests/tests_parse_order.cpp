@@ -31,7 +31,7 @@ static const char *testErrorMain(std::string line)
     return "No Error";
 }
 
-static bool testSuccessMain(std::string line, std::map<Plazza::Plazza::Pizza, std::size_t> test)
+static bool testSuccessMain(std::string line, std::map<Plazza::Utils::Pizza, std::size_t> test)
 {
     try {
         Plazza::Plazza plazza({"1", "1", "1"});
@@ -73,8 +73,8 @@ Test(PizzaOrder, NotValidNumber)
 
 Test(PizzaOrder, SingleOrder)
 {
-    std::map<Plazza::Plazza::Pizza, std::size_t> test = {
-        {std::make_pair(Plazza::Plazza::Fantasia, Plazza::Plazza::M), 3}
+    std::map<Plazza::Utils::Pizza, std::size_t> test = {
+        {std::make_pair(Plazza::Utils::Fantasia, Plazza::Utils::M), 3}
     };
 
     cr_assert(testSuccessMain("fantasia M x3", test));
@@ -82,10 +82,10 @@ Test(PizzaOrder, SingleOrder)
 
 Test(PizzaOrder, MultipleOrder)
 {
-    std::map<Plazza::Plazza::Pizza, std::size_t> test = {
-        {std::make_pair(Plazza::Plazza::Regina, Plazza::Plazza::XXL), 12},
-        {std::make_pair(Plazza::Plazza::Fantasia, Plazza::Plazza::M), 3},
-        {std::make_pair(Plazza::Plazza::Margarita, Plazza::Plazza::S), 1},
+    std::map<Plazza::Utils::Pizza, std::size_t> test = {
+        {std::make_pair(Plazza::Utils::Regina, Plazza::Utils::XXL), 12},
+        {std::make_pair(Plazza::Utils::Fantasia, Plazza::Utils::M), 3},
+        {std::make_pair(Plazza::Utils::Margarita, Plazza::Utils::S), 1},
     };
 
     cr_assert(testSuccessMain("regina XXL x2; fantasia M x3; margarita S x1; regina XXL x10", test));
