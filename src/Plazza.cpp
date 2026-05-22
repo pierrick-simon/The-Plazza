@@ -11,8 +11,6 @@
 #include <algorithm>
 #include "Plazza.hpp"
 #include "Exception.hpp"
-#include "Connect.hpp"
-#include "Kitchen.hpp"
 
 namespace Plazza {
     Plazza::Plazza(std::vector<std::string> args)
@@ -115,6 +113,7 @@ namespace Plazza {
     {
         try {
             auto newCommand = parsePizzaOrders(line);
+            _reception.order(newCommand);
         } catch (OrderException &e) {
             throw e;
         }
@@ -122,8 +121,9 @@ namespace Plazza {
 
     void Plazza::parseCommands(std::string command)
     {
+        if (command.empty())
+            return;
         auto iter = _commands.find(command);
-
         if (iter == _commands.end())
             throw WrongCommandException();
         iter->second();
@@ -137,12 +137,12 @@ namespace Plazza {
         bool exist = false;
 
         try {
-        if (!stream.eof() || stream.fail())
-            newCommand(str);
-        else if (command == "exit")
-            exist = true;
-        else
-            parseCommands(command);
+            if (!stream.eof())
+                newCommand(str);
+            else if (command == "exit")
+                exist = true;
+            else
+                parseCommands(command);
         } catch (ShellException &e) {
             throw e;
         }
