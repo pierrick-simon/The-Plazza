@@ -24,6 +24,7 @@ namespace Plazza {
 
         private:
             Kitchen(int fd);
+            void close();
             IPC _ipc;
             Utils::Ingredient _ingredientsStock;
             static const Utils::Recipes _recipes;

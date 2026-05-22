@@ -12,7 +12,10 @@
     #include <fstream>  
     #include <map>
     #include <string_view>
+    #include <functional>
+    #include <unordered_map>
     #include "Utils.hpp"
+    #include "IPC.hpp"
 
 namespace Plazza {
 
@@ -25,13 +28,17 @@ namespace Plazza {
 
             void order(std::map<Utils::Pizza, std::size_t>);
             void status();
+            void checkKitchens();
+
+            void closeKitchen(std::size_t);
 
         private:
             bool openNewKitchen();
             void logMsg(std::string);
 
             std::ofstream _file;
-            std::map<std::size_t, int> _kitchenFd;
+            std::map<std::size_t, IPC> _kitchenFd;
+            std::unordered_map<int, std::function<void (std::size_t)>> _commands;
     };
 }
 

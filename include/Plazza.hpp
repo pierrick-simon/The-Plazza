@@ -50,6 +50,8 @@ namespace Plazza {
             bool getCommand(std::string);
             void newCommand(std::string line);
 
+            bool readInput();
+
             double _multiplier;
             std::size_t _nbCook;
             double _restock;

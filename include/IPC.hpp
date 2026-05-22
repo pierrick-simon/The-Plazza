@@ -38,6 +38,8 @@ namespace Plazza {
                 return buf;
             }
 
+            int getFd() const {return _fd;}
+
             class IPCException : public PlazzaException {
                 public:
                     IPCException(std::string str)

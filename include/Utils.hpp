@@ -11,6 +11,9 @@
     #include <unordered_map>
 
 namespace Plazza {
+
+    constexpr int CLOSE = 0;
+
     class Utils {
         public:
             enum PizzaType

@@ -5,12 +5,15 @@
 ** Plazza
 */
 
+#include <poll.h>
+#include <unistd.h>
 #include <iostream>
 #include <fstream>
 #include <iomanip>
 #include <algorithm>
 #include "Plazza.hpp"
 #include "Exception.hpp"
+#include "Connect.hpp"
 
 namespace Plazza {
     Plazza::Plazza(std::vector<std::string> args)
@@ -149,20 +152,36 @@ namespace Plazza {
         return exist;
     }
 
-    void Plazza::run()
+    bool Plazza::readInput()
     {
+        bool exit = false;
         std::string str;
-        std::cout << "> ";
-        bool exist = false;
-    
-        while (!exist && std::getline(std::cin, str)) {
+
+        if (!std::getline(std::cin, str))
+            exit = true;
+        if (!exit) {
             try {
-                exist = getCommand(str);
+                exit = getCommand(str);
             } catch (ShellException &e) {
                 std::cerr << e.what() << std::endl;
             }
-            if (!exist)
-                std::cout << "> ";
+        }
+        if (!exit)
+            std::cout << "> " << std::flush;
+        return exit;
+    }
+
+    void Plazza::run()
+    {
+        std::string str;
+        std::cout << "> " << std::flush;
+        bool exit = false;
+
+        while (!exit) {
+            auto info = Connect::infoToRead({0});
+            _reception.checkKitchens();
+            if (info.size() == 1 && info[0])
+                exit = readInput();
         }
     }
 

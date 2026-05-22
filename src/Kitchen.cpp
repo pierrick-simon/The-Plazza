@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <iostream>
 #include "Kitchen.hpp"
+#include "Utils.hpp"
 
 namespace Plazza {
     Kitchen::Kitchen(int fd) :
@@ -23,8 +24,13 @@ namespace Plazza {
     {
         Kitchen kitchen(fd);
 
-        sleep(1);
-        std::cout << "End" << std::endl;
+        sleep(5);
+        kitchen.close();
+    }
+
+    void Kitchen::close()
+    {
+        _ipc.send(CLOSE);
     }
 
     const Utils::Recipes Kitchen::_recipes =
@@ -66,7 +72,7 @@ namespace Plazza {
             }
         },
         {
-            Utils::Regina,
+            Utils::Fantasia,
             {
                 {
                     {Utils::DOUGH, 1},
