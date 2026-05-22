@@ -14,6 +14,8 @@
     #include <unordered_map>
     #include <functional>
     #include <map>
+    #include "Utils.hpp"
+    #include "Reception.hpp"
 
 namespace Plazza {
     constexpr int EPISUCCESS = 0;
@@ -31,70 +33,33 @@ namespace Plazza {
                 RESTOCK
             };
 
-            enum PizzaType
-            {
-                Regina = 1,
-                Margarita = 2,
-                Americana = 4,
-                Fantasia = 8
-            };
-
-            enum PizzaSize
-            {
-                S = 1,
-                M = 2,
-                L = 4,
-                XL = 8,
-                XXL = 16
-            };
-
-            enum IngredientType
-            {
-                DOUGH,
-                TOMATO,
-                GRUYERE,
-                HAM,
-                MUSHROOMS,
-                STEAK,
-                EGGPLANT,
-                GOAT_CHEESE,
-                CHIEF_LOVE,
-                NB_INGREDIENT
-            };
-
-            using Pizza = std::pair<PizzaType, PizzaSize>;
-            using Ingredient = std::unordered_map<
-                Plazza::IngredientType, std::size_t>;
-            using Recipes = std::unordered_map<Plazza::PizzaType,
-                std::pair<Ingredient, std::size_t>>;
-
             Plazza(std::vector<std::string>);
-            std::map<Pizza, std::size_t> parsePizzaOrders(std::string);
+            std::map<Utils::Pizza, std::size_t> parsePizzaOrders(std::string);
 
             void run();
 
             void showHelp();
 
         private:
-            void addNewPizza(Pizza,
-                std::map<Pizza, std::size_t> &, std::string nbStr);
+            void addNewPizza(Utils::Pizza,
+                std::map<Utils::Pizza, std::size_t> &, std::string nbStr);
             std::size_t parseNumber(std::string strNb);
-            void parsePizzaOrder(std::string, std::map<Pizza, std::size_t> &);
+            void parsePizzaOrder(std::string, std::map<Utils::Pizza, std::size_t> &);
 
             void parseCommands(std::string command);
             bool getCommand(std::string);
             void newCommand(std::string line);
 
-            void status();
-
             double _multiplier;
             std::size_t _nbCook;
             double _restock;
 
+            Reception _reception;
+
             std::unordered_map<std::string, std::function<void()>> _commands;
 
-            static const std::unordered_map<std::string, PizzaType> _pizzaType;
-            static const std::unordered_map<std::string, PizzaSize> _pizzaSize;
+            static const std::unordered_map<std::string, Utils::PizzaType> _pizzaType;
+            static const std::unordered_map<std::string, Utils::PizzaSize> _pizzaSize;
     };
 };
 

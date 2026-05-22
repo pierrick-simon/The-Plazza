@@ -11,6 +11,8 @@
 #include <algorithm>
 #include "Plazza.hpp"
 #include "Exception.hpp"
+#include "Connect.hpp"
+#include "Kitchen.hpp"
 
 namespace Plazza {
     Plazza::Plazza(std::vector<std::string> args)
@@ -29,7 +31,7 @@ namespace Plazza {
             || stream2.fail() || !stream2.eof() || _nbCook == 0
             || stream3.fail() || !stream3.eof() || _restock < 0)
             throw WrongArgsException();
-        _commands["status"] = [this]() {status();};
+        _commands["status"] = [this]() {_reception.status();};
     }
 
     std::size_t Plazza::parseNumber(std::string strNb)
@@ -44,8 +46,8 @@ namespace Plazza {
         return nb;
     }
 
-    void Plazza::addNewPizza(Pizza pizza, std::map<Pizza, std::size_t> &pizzas,
-        std::string strNb)
+    void Plazza::addNewPizza(Utils::Pizza pizza,
+        std::map<Utils::Pizza, std::size_t> &pizzas, std::string strNb)
     {
         try {
             std::size_t nb = parseNumber(strNb);
@@ -63,7 +65,7 @@ namespace Plazza {
     }
 
     void Plazza::parsePizzaOrder(
-        std::string order, std::map<Pizza, std::size_t> &pizzas)
+        std::string order, std::map<Utils::Pizza, std::size_t> &pizzas)
     {
         std::string type;
         std::string size;
@@ -90,9 +92,9 @@ namespace Plazza {
         }
     }
 
-    std::map<Plazza::Pizza, std::size_t> Plazza::parsePizzaOrders(std::string line)
+    std::map<Utils::Pizza, std::size_t> Plazza::parsePizzaOrders(std::string line)
     {
-        std::map<Plazza::Pizza, std::size_t> pizzas;
+        std::map<Utils::Pizza, std::size_t> pizzas;
         std::stringstream orders(line);
         std::string segment;
         std::vector<std::string> seglist;
@@ -164,10 +166,6 @@ namespace Plazza {
         }
     }
 
-    void Plazza::status() 
-    {
-    }
-
     void Plazza::showHelp()
     {
         std::ifstream file({std::string(HELP)});
@@ -176,22 +174,22 @@ namespace Plazza {
             std::cout << file.rdbuf();
     }
 
-    const std::unordered_map<std::string, Plazza::PizzaType>
+    const std::unordered_map<std::string, Utils::PizzaType>
         Plazza::_pizzaType =
     {
-        {"regina", Plazza::PizzaType::Regina},
-        {"margarita", Plazza::PizzaType::Margarita},
-        {"americana", Plazza::PizzaType::Americana},
-        {"fantasia", Plazza::PizzaType::Fantasia}
+        {"regina", Utils::PizzaType::Regina},
+        {"margarita", Utils::PizzaType::Margarita},
+        {"americana", Utils::PizzaType::Americana},
+        {"fantasia", Utils::PizzaType::Fantasia}
     };
 
-    const std::unordered_map<std::string, Plazza::PizzaSize>
+    const std::unordered_map<std::string, Utils::PizzaSize>
         Plazza::_pizzaSize =
     {
-        {"S", Plazza::PizzaSize::S},
-        {"M", Plazza::PizzaSize::M},
-        {"L", Plazza::PizzaSize::L},
-        {"XL", Plazza::PizzaSize::XL},
-        {"XXL", Plazza::PizzaSize::XXL},
+        {"S", Utils::PizzaSize::S},
+        {"M", Utils::PizzaSize::M},
+        {"L", Utils::PizzaSize::L},
+        {"XL", Utils::PizzaSize::XL},
+        {"XXL", Utils::PizzaSize::XXL},
     };
 };

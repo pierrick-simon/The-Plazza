@@ -5,64 +5,75 @@
 ** Kitchen
 */
 
+#include <unistd.h>
+#include <iostream>
 #include "Kitchen.hpp"
 
 namespace Plazza {
-    Kitchen::Kitchen()
+    Kitchen::Kitchen(int fd) :
+        _ipc(fd)
     {
-        for (int i = 0; i < Plazza::Plazza::NB_INGREDIENT; i++) {
-            auto ingredient = static_cast<Plazza::Plazza::IngredientType>(i);
+        for (int i = 0; i < Utils::NB_INGREDIENT; i++) {
+            auto ingredient = static_cast<Utils::IngredientType>(i);
             _ingredientsStock.insert(std::make_pair(ingredient, START_INGREDIENT));
         }
     }
 
-    const Plazza::Recipes Kitchen::_recipes =
+    void Kitchen::run(int fd)
+    {
+        Kitchen kitchen(fd);
+
+        sleep(1);
+        std::cout << "End" << std::endl;
+    }
+
+    const Utils::Recipes Kitchen::_recipes =
     {
         {
-            Plazza::Margarita,
+            Utils::Margarita,
             {
                 {
-                    {Plazza::DOUGH, 1},
-                    {Plazza::TOMATO, 1},
-                    {Plazza::GRUYERE, 1}
+                    {Utils::DOUGH, 1},
+                    {Utils::TOMATO, 1},
+                    {Utils::GRUYERE, 1}
                 }, 
                 1
             }
         },
         {
-            Plazza::Regina,
+            Utils::Regina,
             {
                 {
-                    {Plazza::DOUGH, 1},
-                    {Plazza::TOMATO, 1},
-                    {Plazza::GRUYERE, 1},
-                    {Plazza::HAM, 1},
-                    {Plazza::MUSHROOMS, 1}
+                    {Utils::DOUGH, 1},
+                    {Utils::TOMATO, 1},
+                    {Utils::GRUYERE, 1},
+                    {Utils::HAM, 1},
+                    {Utils::MUSHROOMS, 1}
                 }, 
                 2
             }
         },
         {
-            Plazza::Americana,
+            Utils::Americana,
             {
                 {
-                    {Plazza::DOUGH, 1},
-                    {Plazza::TOMATO, 1},
-                    {Plazza::GRUYERE, 1},
-                    {Plazza::STEAK, 1}
+                    {Utils::DOUGH, 1},
+                    {Utils::TOMATO, 1},
+                    {Utils::GRUYERE, 1},
+                    {Utils::STEAK, 1}
                 }, 
                 2
             }
         },
         {
-            Plazza::Regina,
+            Utils::Regina,
             {
                 {
-                    {Plazza::DOUGH, 1},
-                    {Plazza::TOMATO, 1},
-                    {Plazza::EGGPLANT, 1},
-                    {Plazza::GOAT_CHEESE, 1},
-                    {Plazza::CHIEF_LOVE, 1}
+                    {Utils::DOUGH, 1},
+                    {Utils::TOMATO, 1},
+                    {Utils::EGGPLANT, 1},
+                    {Utils::GOAT_CHEESE, 1},
+                    {Utils::CHIEF_LOVE, 1}
                 }, 
                 4
             }

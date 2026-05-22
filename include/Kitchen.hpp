@@ -12,6 +12,7 @@
     #include <vector>
     #include <string>
     #include "Plazza.hpp"
+    #include "IPC.hpp"
 
 namespace Plazza {
 
@@ -19,11 +20,13 @@ namespace Plazza {
 
     class Kitchen {
         public:
-            Kitchen();
+            static void run(int fd);
 
         private:
-            Plazza::Ingredient _ingredientsStock;
-            static const Plazza::Recipes _recipes;
+            Kitchen(int fd);
+            IPC _ipc;
+            Utils::Ingredient _ingredientsStock;
+            static const Utils::Recipes _recipes;
     };
 }
 

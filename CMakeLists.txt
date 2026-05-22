@@ -15,6 +15,7 @@ set(SRCS
     src/Plazza.cpp
     src/Kitchen.cpp
     src/Connect.cpp
+    src/Reception.cpp
 )
 
 set(HEADERS
