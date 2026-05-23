@@ -17,7 +17,7 @@ namespace Plazza {
         public:
             static int connect(std::function<void (int fd)>);
 
-            static void wait();
+            static void waitAll();
 
             static std::vector<bool> infoToRead(std::vector<int>);
 

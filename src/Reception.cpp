@@ -21,16 +21,11 @@ namespace Plazza {
 
     Reception::~Reception()
     {
-        auto id = _kitchenFd.begin()->first;
-        bool ask = false;
-
-        while (!_kitchenFd.empty()) {
-            if (id != _kitchenFd.begin()->first)
-                ask = false;
-            if (!ask)
-                _kitchenFd.begin()->second.send(CLOSE);
+        for (auto &[id, ipc] : _kitchenFd)
+            ipc.send(CLOSE);
+        while (!_kitchenFd.empty())
             checkKitchens();
-        }
+        Connect::waitAll();
         logMsg("Reception Closed.");
         _file.close();
     }
@@ -41,7 +36,9 @@ namespace Plazza {
         bool value = true;
 
         try {
-            auto fd = Connect::connect(Kitchen::run);
+            auto fd = Connect::connect([this](int fd) {
+                Kitchen::run(fd, _multiplier, _nbCook, _restock);
+            });
             _kitchenFd.emplace(std::make_pair(id, fd));
             logMsg("Kitchen[" + std::to_string(id) + "] Opened.");
             id++;

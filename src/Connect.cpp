@@ -30,7 +30,7 @@ namespace Plazza {
         return sv[0];
     }
 
-    void Connect::wait()
+    void Connect::waitAll()
     {
         while (waitpid(-1, nullptr, 0) > 0);
     }

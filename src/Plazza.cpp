@@ -20,16 +20,22 @@ namespace Plazza {
             showHelp();
             throw WrongArgsException();
         }
+        double multiplier;
         std::istringstream stream1(args[MULTIPLIER]);
-        stream1 >> _multiplier;
+        stream1 >> multiplier;
+        std::size_t nbCook;
         std::istringstream stream2(args[NBCOOK]);
-        stream2 >> _nbCook;
+        stream2 >> nbCook;
+        double restock;
         std::istringstream stream3(args[RESTOCK]);
-        stream3 >> _restock;
-        if (stream1.fail() || !stream1.eof() || _multiplier < 0
-            || stream2.fail() || !stream2.eof() || _nbCook == 0
-            || stream3.fail() || !stream3.eof() || _restock < 0)
+        stream3 >> restock;
+        if (stream1.fail() || !stream1.eof() || multiplier < 0
+            || stream2.fail() || !stream2.eof() || nbCook == 0
+            || stream3.fail() || !stream3.eof() || restock < 0)
             throw WrongArgsException();
+        _reception.setMultiplier(multiplier);
+        _reception.setNbCook(nbCook);
+        _reception.setRestock(restock);
         _commands["status"] = [this]() {_reception.status();};
     }
 

@@ -52,10 +52,6 @@ namespace Plazza {
 
             bool readInput();
 
-            double _multiplier;
-            std::size_t _nbCook;
-            double _restock;
-
             Reception _reception;
 
             std::unordered_map<std::string, std::function<void()>> _commands;

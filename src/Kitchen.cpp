@@ -12,8 +12,10 @@
 #include "Connect.hpp"
 
 namespace Plazza {
-    Kitchen::Kitchen(int fd) :
-        _ipc(fd), _loop(true)
+    Kitchen::Kitchen(int fd, double multiplier,
+        std::size_t nbCook, double restock) :
+        _ipc(fd), _multiplier(multiplier), _nbCook(nbCook),
+        _restock(restock), _loop(true)
     {
         for (int i = 0; i < Utils::NB_INGREDIENT; i++) {
             auto ingredient = static_cast<Utils::IngredientType>(i);
@@ -25,12 +27,13 @@ namespace Plazza {
 
     Kitchen::~Kitchen()
     {
-       _ipc.send(CLOSE); 
+       _ipc.send(CLOSE);
     }
 
-    void Kitchen::run(int fd)
+    void Kitchen::run(int fd, double multiplier,
+        std::size_t nbCook, double restock)
     {
-        Kitchen kitchen(fd);
+        Kitchen kitchen(fd, multiplier, nbCook, restock);
 
         while (kitchen._loop) {
             auto now = std::chrono::steady_clock::now();
