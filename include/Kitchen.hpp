@@ -11,6 +11,7 @@
     #include <unordered_map>
     #include <vector>
     #include <string>
+    #include <queue>
     #include "Plazza.hpp"
     #include "IPC.hpp"
     #include "Utils.hpp"
@@ -26,12 +27,17 @@ namespace Plazza {
 
         private:
             Kitchen(int fd);
+            ~Kitchen();
             void close();
+            void readMsg();
 
             IPC _ipc;
             Utils::Ingredient _ingredientsStock;
             static const Utils::Recipes _recipes;
             Utils::Clock _inactivity;
+            std::queue<Utils::Pizza> _orders;
+            bool _loop;
+            std::unordered_map<int, std::function<void ()>> _commands;
     };
 }
 

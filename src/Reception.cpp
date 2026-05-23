@@ -21,6 +21,16 @@ namespace Plazza {
 
     Reception::~Reception()
     {
+        auto id = _kitchenFd.begin()->first;
+        bool ask = false;
+
+        while (!_kitchenFd.empty()) {
+            if (id != _kitchenFd.begin()->first)
+                ask = false;
+            if (!ask)
+                _kitchenFd.begin()->second.send(CLOSE);
+            checkKitchens();
+        }
         logMsg("Reception Closed.");
         _file.close();
     }
