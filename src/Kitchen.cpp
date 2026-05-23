@@ -18,13 +18,19 @@ namespace Plazza {
             auto ingredient = static_cast<Utils::IngredientType>(i);
             _ingredientsStock.insert(std::make_pair(ingredient, START_INGREDIENT));
         }
+        _inactivity = std::chrono::steady_clock::now();
     }
 
     void Kitchen::run(int fd)
     {
         Kitchen kitchen(fd);
 
-        sleep(5);
+        while (true) {
+            auto now = std::chrono::steady_clock::now();
+            if (std::chrono::duration<double>(now - kitchen._inactivity)
+                .count() > OPEN_TIME)
+                break;
+        }
         kitchen.close();
     }
 

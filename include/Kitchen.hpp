@@ -13,10 +13,12 @@
     #include <string>
     #include "Plazza.hpp"
     #include "IPC.hpp"
+    #include "Utils.hpp"
 
 namespace Plazza {
 
     constexpr std::size_t START_INGREDIENT = 5;
+    constexpr double OPEN_TIME = 5.0;
 
     class Kitchen {
         public:
@@ -25,9 +27,11 @@ namespace Plazza {
         private:
             Kitchen(int fd);
             void close();
+
             IPC _ipc;
             Utils::Ingredient _ingredientsStock;
             static const Utils::Recipes _recipes;
+            Utils::Clock _inactivity;
     };
 }
 

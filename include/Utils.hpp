@@ -9,6 +9,7 @@
     #define UTILS_HPP
 
     #include <unordered_map>
+    #include <chrono>
 
 namespace Plazza {
 
@@ -52,6 +53,7 @@ namespace Plazza {
                 IngredientType, std::size_t>;
             using Recipes = std::unordered_map<PizzaType,
                 std::pair<Ingredient, std::size_t>>;
+            using Clock = std::chrono::_V2::steady_clock::time_point;
 
     };
 }
