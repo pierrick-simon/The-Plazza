@@ -41,11 +41,36 @@ namespace Plazza {
             if (std::chrono::duration<double>(now - kitchen._inactivity)
                 .count() > OPEN_TIME)
                 break;
-            if (!kitchen._orders.empty())
+            if (!kitchen._orders.empty()) {
                 kitchen._inactivity = now;
+                kitchen.handleCook();
+            }
             auto info = Connect::infoToRead({kitchen._ipc.getFd()});
             if (info.size() == 1 && info[0])
                 kitchen.readMsg();
+        }
+    }
+
+    void Kitchen::handleCook()
+    {
+        if (_cook) {
+            auto now = std::chrono::steady_clock::now();
+            auto front = _orders.front();
+            auto time = _recipes.at(front.first).second * _multiplier;
+            if (std::chrono::duration<double>(now - _oven)
+                .count() > time) {
+                Packet<sizeof(Utils::Pizza)> packet;
+                packet << front;
+                _ipc.send(COMMAND);
+                _ipc.send(packet);
+                _cook = false;
+                _orders.pop();
+            }
+        } else {
+            if (!_orders.empty()) {
+                _cook = true;
+                _oven = std::chrono::steady_clock::now();
+            }
         }
     }
 
@@ -90,7 +115,7 @@ namespace Plazza {
                     {Utils::TOMATO, 1},
                     {Utils::GRUYERE, 1}
                 }, 
-                1
+                1.0
             }
         },
         {
@@ -103,7 +128,7 @@ namespace Plazza {
                     {Utils::HAM, 1},
                     {Utils::MUSHROOMS, 1}
                 }, 
-                2
+                2.0
             }
         },
         {
@@ -115,7 +140,7 @@ namespace Plazza {
                     {Utils::GRUYERE, 1},
                     {Utils::STEAK, 1}
                 }, 
-                2
+                2.0
             }
         },
         {
@@ -128,7 +153,7 @@ namespace Plazza {
                     {Utils::GOAT_CHEESE, 1},
                     {Utils::CHIEF_LOVE, 1}
                 }, 
-                4
+                4.0
             }
         },
     };

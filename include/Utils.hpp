@@ -57,7 +57,7 @@ namespace Plazza {
             using Ingredient = std::unordered_map<
                 IngredientType, std::size_t>;
             using Recipes = std::unordered_map<PizzaType,
-                std::pair<Ingredient, std::size_t>>;
+                std::pair<Ingredient, double>>;
             using Clock = std::chrono::_V2::steady_clock::time_point;
 
             static PizzaType getType(std::string);

@@ -30,6 +30,7 @@ namespace Plazza {
             Kitchen(int fd, double multiplier,
                 std::size_t nbCook, double restock);
             ~Kitchen();
+            void handleCook();
             void close();
             void command();
             void readMsg();
@@ -40,6 +41,8 @@ namespace Plazza {
             double _restock;
             Utils::Ingredient _ingredientsStock;
             Utils::Clock _inactivity;
+            Utils::Clock _oven;
+            bool _cook = false;
             std::queue<Utils::Pizza> _orders;
             bool _loop;
 

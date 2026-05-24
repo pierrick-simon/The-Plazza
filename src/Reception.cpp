@@ -19,6 +19,7 @@ namespace Plazza {
     {
         logMsg("Reception Opened.");
         _commands[CLOSE] = [this](std::size_t id) {closeKitchen(id);};
+        _commands[COMMAND] = [this](std::size_t id) {orderDone(id);};
     }
 
     Reception::~Reception()
@@ -55,8 +56,8 @@ namespace Plazza {
         ipc.send(COMMAND);
         ipc.send(packet);
         if (ipc.receive<int>() == OK) {
-            logMsg("Kitchen[" + std::to_string(id) + "] add "
-                + Utils::pizzaToString(pizza) + " to his list.");
+            logMsg("Kitchen[" + std::to_string(id) + "] Add "
+                + Utils::pizzaToString(pizza) + " to the list.");
             status = true;
         }
         return status;
@@ -122,6 +123,19 @@ namespace Plazza {
             return;
         logMsg("Kitchen[" + std::to_string(id) + "] Closed.");
         _kitchenFd.erase(id);
+    }
+
+    void Reception::orderDone(std::size_t id)
+    {
+        auto find = _kitchenFd.find(id);
+
+        if (find == _kitchenFd.end())
+            return;
+        auto packet = find->second.receive<Packet<sizeof(Utils::Pizza)>>();
+        Utils::Pizza pizza;
+        packet >> pizza;
+        logMsg("Kitchen[" + std::to_string(id) + "] Pizza "
+            + Utils::pizzaToString(pizza) + " is ready to be served.");
     }
 
     void Reception::logMsg(std::string msg)
