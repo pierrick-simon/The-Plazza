@@ -31,6 +31,7 @@ namespace Plazza {
                 std::size_t nbCook, double restock);
             ~Kitchen();
             void close();
+            void command();
             void readMsg();
 
             IPC _ipc;

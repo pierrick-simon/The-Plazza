@@ -16,6 +16,7 @@ set(SRCS
     src/Kitchen.cpp
     src/Connect.cpp
     src/Reception.cpp
+    src/Utils.cpp
 )
 
 set(HEADERS

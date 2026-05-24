@@ -37,8 +37,10 @@ namespace Plazza {
             void setRestock(double restock) {_restock = restock;}
 
         private:
-            bool openNewKitchen();
+            std::pair<std::size_t, const IPC &>openNewKitchen();
             void logMsg(std::string);
+            bool sendOrderToKitchen(const IPC &ipc, std::size_t, Utils::Pizza);
+            void sendOrder(Utils::Pizza);
 
             double _multiplier = 1;
             std::size_t _nbCook = 1;

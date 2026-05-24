@@ -5,11 +5,13 @@
 ** Reception
 */
 
+#include <unistd.h>
 #include <chrono>
 #include <iomanip>
 #include "Reception.hpp"
 #include "Kitchen.hpp"
 #include "Connect.hpp"
+#include "Packet.hpp"
 
 namespace Plazza {
 
@@ -30,27 +32,52 @@ namespace Plazza {
         _file.close();
     }
 
-    bool Reception::openNewKitchen()
+    std::pair<std::size_t, const IPC &>Reception::openNewKitchen()
     {
         static std::size_t id = 0;
-        bool value = true;
 
-        try {
-            auto fd = Connect::connect([this](int fd) {
-                Kitchen::run(fd, _multiplier, _nbCook, _restock);
-            });
-            _kitchenFd.emplace(std::make_pair(id, fd));
-            logMsg("Kitchen[" + std::to_string(id) + "] Opened.");
-            id++;
-        } catch (Connect::ConnectException &_) {
-            value = false;
+        auto fd = Connect::connect([this](int fd) {
+            Kitchen::run(fd, _multiplier, _nbCook, _restock);
+        });
+        _kitchenFd.emplace(std::make_pair(id, fd));
+        logMsg("Kitchen[" + std::to_string(id) + "] Opened.");
+        id++;
+        return *_kitchenFd.find(id - 1);
+    }
+
+    bool Reception::sendOrderToKitchen(
+        const IPC &ipc, std::size_t id, Utils::Pizza pizza)
+    {
+        Packet<sizeof(Utils::Pizza)> packet;
+        bool status = false;
+
+        packet << pizza;
+        ipc.send(COMMAND);
+        ipc.send(packet);
+        if (ipc.receive<int>() == OK) {
+            logMsg("Kitchen[" + std::to_string(id) + "] add "
+                + Utils::pizzaToString(pizza) + " to his list.");
+            status = true;
         }
-        return value;
+        return status;
+    }
+
+    void Reception::sendOrder(Utils::Pizza pizza)
+    {
+        for (auto const &kitchen: _kitchenFd) {
+            if (sendOrderToKitchen(kitchen.second, kitchen.first, pizza))
+                return;
+        }
+        auto kitchen = openNewKitchen();
+        sendOrderToKitchen(kitchen.second, kitchen.first, pizza);
     }
 
     void Reception::order(std::map<Utils::Pizza, std::size_t> pizzas)
     {
-        openNewKitchen();
+        for (auto [pizza, nb]: pizzas) {
+            for (size_t i = 0; i < nb; i++)
+                sendOrder(pizza);
+        }
     }
 
     void Reception::status()

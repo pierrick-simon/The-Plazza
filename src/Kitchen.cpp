@@ -5,8 +5,8 @@
 ** Kitchen
 */
 
-#include <unistd.h>
 #include <iostream>
+#include <Packet.hpp>
 #include "Kitchen.hpp"
 #include "Utils.hpp"
 #include "Connect.hpp"
@@ -23,6 +23,7 @@ namespace Plazza {
         }
         _inactivity = std::chrono::steady_clock::now();
         _commands[CLOSE] = [this]() {close();};
+        _commands[COMMAND] = [this]() {command();};
     }
 
     Kitchen::~Kitchen()
@@ -63,6 +64,20 @@ namespace Plazza {
     void Kitchen::close()
     {
         _loop = false;
+    }
+
+    void Kitchen::command()
+    {
+        auto packet = _ipc.receive<Packet<sizeof(Utils::Pizza)>>();
+
+        if (_orders.size() < _nbCook * 2) {
+            Utils::Pizza pizza;
+            packet >> pizza;
+            _orders.push(pizza);
+            _ipc.send(OK);
+            return;
+        }
+        _ipc.send(ERROR);
     }
 
     const Utils::Recipes Kitchen::_recipes =

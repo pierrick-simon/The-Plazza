@@ -55,9 +55,6 @@ namespace Plazza {
             Reception _reception;
 
             std::unordered_map<std::string, std::function<void()>> _commands;
-
-            static const std::unordered_map<std::string, Utils::PizzaType> _pizzaType;
-            static const std::unordered_map<std::string, Utils::PizzaSize> _pizzaSize;
     };
 };
 

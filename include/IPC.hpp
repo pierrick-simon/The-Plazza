@@ -23,14 +23,14 @@ namespace Plazza {
             };
 
             template<typename T>
-            void send(const T msg)
+            void send(const T msg) const
             {
                 if (write(_fd, &msg, sizeof(T)) < 0)
                     throw SendException();
             }
 
             template<typename T>
-            T receive()
+            T receive() const
             {
                 T buf = {};
                 if (read(_fd, &buf, sizeof(T)) <= 0)

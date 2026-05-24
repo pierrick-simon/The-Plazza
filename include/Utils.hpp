@@ -10,10 +10,15 @@
 
     #include <unordered_map>
     #include <chrono>
+    #include <string>
+    #include <ostream>
 
 namespace Plazza {
 
-    constexpr int CLOSE = 0;
+    constexpr int CLOSE = 300;
+    constexpr int OK = 200;
+    constexpr int COMMAND = 230;
+    constexpr int ERROR = 500;
 
     class Utils {
         public:
@@ -55,7 +60,17 @@ namespace Plazza {
                 std::pair<Ingredient, std::size_t>>;
             using Clock = std::chrono::_V2::steady_clock::time_point;
 
+            static PizzaType getType(std::string);
+            static PizzaSize getSize(std::string);
+            static std::string typeToString(PizzaType type);
+            static std::string sizeToString(PizzaSize size);
+            static std::string pizzaToString(Pizza);
+        private:
+            static const std::unordered_map<PizzaType, std::string> _strPizzaType;
+            static const std::unordered_map<PizzaSize, std::string> _strPizzaSize;
     };
+
+    std::ostream &operator<<(std::ostream &os, const Utils::Pizza &pizza);
 }
 
 #endif

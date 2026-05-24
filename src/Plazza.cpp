@@ -72,27 +72,19 @@ namespace Plazza {
     void Plazza::parsePizzaOrder(
         std::string order, std::map<Utils::Pizza, std::size_t> &pizzas)
     {
-        std::string type;
-        std::string size;
+        std::string strType;
+        std::string strSize;
         std::string strNb;
         std::stringstream tmp(order);
-        tmp >> type >> size >> strNb;
+        tmp >> strType >> strSize >> strNb;
         if (tmp.fail() || !tmp.eof())
             throw InvalidOrderException();
-        std::transform(type.begin(), type.end(), type.begin(),
-            [](unsigned char c) {return std::tolower(c);});
-        auto findType = _pizzaType.find(type);
-        if (findType == _pizzaType.end())
-            throw WrongPizzaTypeException(type);
-        std::transform(size.begin(), size.end(), size.begin(),
-            [](unsigned char c) {return std::toupper(c);});
-        auto findSize = _pizzaSize.find(size);
-        if (findSize == _pizzaSize.end())
-            throw WrongPizzaSizeException(size);
         try {
-            addNewPizza(std::make_pair(findType->second, findSize->second),
+            auto type = Utils::getType(strType);
+            auto size = Utils::getSize(strSize);
+            addNewPizza(std::make_pair(type, size),
                 pizzas, strNb);
-        } catch (NotValidNumberException &e) {
+        } catch (OrderException &e) {
             throw e;
         }
     }
@@ -196,23 +188,4 @@ namespace Plazza {
         if (file.is_open())
             std::cout << file.rdbuf();
     }
-
-    const std::unordered_map<std::string, Utils::PizzaType>
-        Plazza::_pizzaType =
-    {
-        {"regina", Utils::PizzaType::Regina},
-        {"margarita", Utils::PizzaType::Margarita},
-        {"americana", Utils::PizzaType::Americana},
-        {"fantasia", Utils::PizzaType::Fantasia}
-    };
-
-    const std::unordered_map<std::string, Utils::PizzaSize>
-        Plazza::_pizzaSize =
-    {
-        {"S", Utils::PizzaSize::S},
-        {"M", Utils::PizzaSize::M},
-        {"L", Utils::PizzaSize::L},
-        {"XL", Utils::PizzaSize::XL},
-        {"XXL", Utils::PizzaSize::XXL},
-    };
 };
