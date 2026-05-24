@@ -30,7 +30,7 @@ namespace Plazza {
             if (value == str)
                 return key;
         }
-        throw WrongPizzaTypeException(str);
+        throw WrongPizzaSizeException(str);
     }
 
     std::string Utils::typeToString(PizzaType type)
