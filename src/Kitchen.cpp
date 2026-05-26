@@ -6,8 +6,9 @@
 */
 
 #include <iostream>
-#include <Packet.hpp>
+#include "Packet.hpp"
 #include "Kitchen.hpp"
+#include "Cook.hpp"
 #include "Utils.hpp"
 #include "Connect.hpp"
 
@@ -15,8 +16,9 @@ namespace Plazza {
     Kitchen::Kitchen(int fd, double multiplier,
         std::size_t nbCook, double restock) :
         _ipc(fd), _multiplier(multiplier), _nbCook(nbCook),
-        _restock(restock), _loop(true)
+        _restock(restock), _loop(true), _sem(0)
     {
+        _cooks.emplace_back(_mut, _sem, _ipc, _orders, _multiplier, _loop);
         for (int i = 0; i < Utils::NB_INGREDIENT; i++) {
             auto ingredient = static_cast<Utils::IngredientType>(i);
             _ingredientsStock.insert(std::make_pair(ingredient, START_INGREDIENT));
@@ -41,37 +43,15 @@ namespace Plazza {
             if (std::chrono::duration<double>(now - kitchen._inactivity)
                 .count() > OPEN_TIME)
                 break;
-            if (!kitchen._orders.empty()) {
+            if (!kitchen._orders.empty())
                 kitchen._inactivity = now;
-                kitchen.handleCook();
-            }
             auto info = Connect::infoToRead({kitchen._ipc.getFd()});
             if (info.size() == 1 && info[0])
                 kitchen.readMsg();
         }
-    }
-
-    void Kitchen::handleCook()
-    {
-        if (_cook) {
-            auto now = std::chrono::steady_clock::now();
-            auto front = _orders.front();
-            auto time = _recipes.at(front.first).second * _multiplier;
-            if (std::chrono::duration<double>(now - _oven)
-                .count() > time) {
-                Packet<sizeof(Utils::Pizza)> packet;
-                packet << front;
-                _ipc.send(COMMAND);
-                _ipc.send(packet);
-                _cook = false;
-                _orders.pop();
-            }
-        } else {
-            if (!_orders.empty()) {
-                _cook = true;
-                _oven = std::chrono::steady_clock::now();
-            }
-        }
+        kitchen._loop = false;
+        for (auto &cook: kitchen._cooks)
+            cook.join();
     }
 
     void Kitchen::readMsg()
@@ -98,14 +78,17 @@ namespace Plazza {
         if (_orders.size() < _nbCook * 2) {
             Utils::Pizza pizza;
             packet >> pizza;
+            _mut.lock();
             _orders.push(pizza);
             _ipc.send(OK);
+            _mut.unlock();
+            _sem.release();
             return;
         }
         _ipc.send(ERROR);
     }
 
-    const Utils::Recipes Kitchen::_recipes =
+    const Utils::Recipes Kitchen::recipes =
     {
         {
             Utils::Margarita,

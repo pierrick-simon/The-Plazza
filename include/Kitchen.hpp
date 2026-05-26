@@ -12,6 +12,8 @@
     #include <vector>
     #include <string>
     #include <queue>
+    #include <mutex>
+    #include <semaphore>
     #include "Plazza.hpp"
     #include "IPC.hpp"
     #include "Utils.hpp"
@@ -21,16 +23,19 @@ namespace Plazza {
     constexpr std::size_t START_INGREDIENT = 5;
     constexpr double OPEN_TIME = 5.0;
 
+    class Cook;
+
     class Kitchen {
         public:
             static void run(int fd, double multiplier,
                 std::size_t nbCook, double _restock);
 
+            static const Utils::Recipes recipes;
+
         private:
             Kitchen(int fd, double multiplier,
                 std::size_t nbCook, double restock);
             ~Kitchen();
-            void handleCook();
             void close();
             void command();
             void readMsg();
@@ -42,12 +47,14 @@ namespace Plazza {
             Utils::Ingredient _ingredientsStock;
             Utils::Clock _inactivity;
             Utils::Clock _oven;
-            bool _cook = false;
             std::queue<Utils::Pizza> _orders;
+            std::vector<Cook> _cooks;
             bool _loop;
 
+            std::mutex _mut;
+            std::counting_semaphore<> _sem;
+
             std::unordered_map<int, std::function<void ()>> _commands;
-            static const Utils::Recipes _recipes;
     };
 }
 
