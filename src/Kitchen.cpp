@@ -20,6 +20,8 @@ namespace Plazza {
     {
         for (std::size_t i = 0; i < _nbCook; ++i)
             _cooks.emplace_back(_orders, _finishedOrders, _multiplier, _loop);
+        for (std::size_t i = 0; i < _nbCook; ++i)
+            _cooks[i].start();
         for (std::size_t i = 0; i < Utils::NB_INGREDIENT; ++i) {
             auto ingredient = static_cast<Utils::IngredientType>(i);
             _ingredientsStock.insert(std::make_pair(ingredient, START_INGREDIENT));
@@ -31,7 +33,11 @@ namespace Plazza {
 
     Kitchen::~Kitchen()
     {
-       _ipc.send(CLOSE);
+        _ipc.send(CLOSE);
+        _loop.set(false);
+        for (auto &cook: _cooks) {
+            cook.join();
+        }
     }
 
     void Kitchen::run(int fd, double multiplier,
@@ -39,28 +45,29 @@ namespace Plazza {
     {
         Kitchen kitchen(fd, multiplier, nbCook, restock);
 
-        while (kitchen._loop) {
+        while (kitchen._loop.get()) {
+            kitchen.sendFinishedOrders();
             auto now = std::chrono::steady_clock::now();
             if (std::chrono::duration<double>(now - kitchen._inactivity)
                 .count() > OPEN_TIME)
                 break;
-            // if (!kitchen._orders.empty() || !kitchen._finishedOrders.empty() || kitchen.isActiveCook())
-            //     kitchen._inactivity = now;
+            if (!kitchen._orders.empty() || !kitchen._finishedOrders.empty() || kitchen.getActiveCookNumber())
+                kitchen._inactivity = now;
             auto info = Connect::infoToRead({kitchen._ipc.getFd()});
             if (info.size() == 1 && info[0])
                 kitchen.readMsg();
         }
-        kitchen._loop = false;
-        for (auto &cook: kitchen._cooks)
-            cook.join();
+        kitchen.sendFinishedOrders();
     }
 
-    bool Kitchen::isActiveCook()
+    std::size_t Kitchen::getActiveCookNumber()
     {
+        std::size_t i = 0;
+
         for (auto &cook: _cooks)
             if (cook.isActive())
-                return true;
-        return false;
+                ++i;
+        return i;
     }
 
     void Kitchen::sendFinishedOrders()
@@ -83,20 +90,20 @@ namespace Plazza {
             if (find != _commands.end())
                 find->second();
         } catch (IPC::CloseException &_) {
-            _loop = false;
+            _loop.set(false);
         }
     }
 
     void Kitchen::close()
     {
-        _loop = false;
+        _loop.set(false);
     }
 
     void Kitchen::command()
     {
         auto packet = _ipc.receive<Packet<sizeof(Utils::Pizza)>>();
 
-        if (_orders.size() < _nbCook * 2) {
+        if (_orders.size() + getActiveCookNumber() < _nbCook * 2) {
             Utils::Pizza pizza;
             packet >> pizza;
             _orders.push(pizza);

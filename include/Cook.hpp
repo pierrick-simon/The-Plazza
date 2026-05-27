@@ -9,6 +9,7 @@
 #define COOK_HPP_
 
 #include <thread>
+#include <atomic>
 
 #include "Utils.hpp"
 #include "SafeQueue.hpp"
@@ -19,9 +20,11 @@ namespace Plazza {
         public:
             Cook(SafeQueue<Utils::Pizza> &orders,
                 SafeQueue<Utils::Pizza> &finishedOrders,
-                double multiplier, bool &loop);
+                double multiplier, SafeValue<bool> &loop);
 
-            void join() { _thread.join(); };
+            void start() { _thread = std::thread([this]() { run(); }); };
+
+            void join() { _thread.detach(); };
 
             bool isActive() { return _active; };
 
@@ -31,7 +34,7 @@ namespace Plazza {
             SafeQueue<Utils::Pizza> &_finishedOrders;
             double _multiplier;
             bool _active = false;
-            bool &_loop;
+            SafeValue<bool> &_loop;
 
             void run();
     };

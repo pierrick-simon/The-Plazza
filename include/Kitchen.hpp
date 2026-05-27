@@ -11,6 +11,7 @@
     #include <unordered_map>
     #include <vector>
     #include <string>
+    #include <atomic>
     #include "Plazza.hpp"
     #include "IPC.hpp"
     #include "Utils.hpp"
@@ -37,7 +38,7 @@ namespace Plazza {
             void close();
             void command();
             void readMsg();
-            bool isActiveCook();
+            std::size_t getActiveCookNumber();
             void sendFinishedOrders();
 
             IPC _ipc;
@@ -50,7 +51,7 @@ namespace Plazza {
             SafeQueue<Utils::Pizza> _orders;
             SafeQueue<Utils::Pizza> _finishedOrders;
             std::vector<Cook> _cooks;
-            bool _loop;
+            SafeValue<bool> _loop;
 
             std::unordered_map<int, std::function<void ()>> _commands;
     };
