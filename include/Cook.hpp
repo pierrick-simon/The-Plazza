@@ -13,6 +13,7 @@
 
 #include "Utils.hpp"
 #include "SafeQueue.hpp"
+#include "IngredientMap.hpp"
 
 namespace Plazza {
 
@@ -20,7 +21,8 @@ namespace Plazza {
         public:
             Cook(SafeQueue<Utils::Pizza> &orders,
                 SafeQueue<Utils::Pizza> &finishedOrders,
-                double multiplier, std::atomic<bool> &loop);
+                double multiplier, std::atomic<bool> &loop,
+                IngredientMap &ingredients);
 
             void start() { _thread = std::thread([this]() { run(); }); };
 
@@ -32,6 +34,7 @@ namespace Plazza {
             std::thread _thread;
             SafeQueue<Utils::Pizza> &_orders;
             SafeQueue<Utils::Pizza> &_finishedOrders;
+            IngredientMap &_ingredients;
             double _multiplier;
             bool _active = false;
             std::atomic<bool> &_loop;

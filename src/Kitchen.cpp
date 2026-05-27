@@ -16,16 +16,13 @@ namespace Plazza {
     Kitchen::Kitchen(int fd, double multiplier,
         std::size_t nbCook, double restock) :
         _ipc(fd), _multiplier(multiplier), _nbCook(nbCook),
-        _restock(restock), _loop(true)
+        _restock(restock), _loop(true), _ingredients(Utils::START_INGREDIENT)
     {
         for (std::size_t i = 0; i < _nbCook; ++i)
-            _cooks.emplace_back(_orders, _finishedOrders, _multiplier, _loop);
+            _cooks.emplace_back(_orders, _finishedOrders,
+                _multiplier, _loop, _ingredients);
         for (std::size_t i = 0; i < _nbCook; ++i)
             _cooks[i].start();
-        for (std::size_t i = 0; i < Utils::NB_INGREDIENT; ++i) {
-            auto ingredient = static_cast<Utils::IngredientType>(i);
-            _ingredients.insert(std::make_pair(ingredient, START_INGREDIENT));
-        }
         _inactivity = std::chrono::steady_clock::now();
         _commands[CLOSE] = [this]() {close();};
         _commands[COMMAND] = [this]() {command();};

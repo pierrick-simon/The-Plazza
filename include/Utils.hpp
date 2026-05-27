@@ -59,16 +59,20 @@ namespace Plazza {
             using Recipes = std::unordered_map<PizzaType,
                 std::pair<Ingredient, double>>;
             using Clock = std::chrono::_V2::steady_clock::time_point;
+            
+            static constexpr std::size_t START_INGREDIENT = 5;
 
             static PizzaType getType(std::string);
             static PizzaSize getSize(std::string);
             static std::string typeToString(PizzaType type);
             static std::string sizeToString(PizzaSize size);
             static std::string pizzaToString(Pizza);
+
         private:
             static const std::unordered_map<PizzaType, std::string> _strPizzaType;
             static const std::unordered_map<PizzaSize, std::string> _strPizzaSize;
     };
+
 
     std::ostream &operator<<(std::ostream &os, const Utils::Pizza &pizza);
 }

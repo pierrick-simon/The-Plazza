@@ -13,11 +13,13 @@
 
 Plazza::Cook::Cook(SafeQueue<Utils::Pizza> &orders,
                 SafeQueue<Utils::Pizza> &finishedOrders,
-                double multiplier, std::atomic<bool> &loop):
+                double multiplier, std::atomic<bool> &loop,
+                IngredientMap &ingredients):
     _orders(orders),
     _finishedOrders(finishedOrders),
     _multiplier(multiplier),
-    _loop(loop) {}
+    _loop(loop),
+    _ingredients(ingredients) {}
 
 void Plazza::Cook::run()
 {
@@ -26,8 +28,9 @@ void Plazza::Cook::run()
 
         _active = true;
 
-        auto time = Kitchen::recipes.at(front.first).second
-            * _multiplier * 1000;
+        auto recipe = Kitchen::recipes.at(front.first);
+        _ingredients.consume(recipe.first);
+        auto time = recipe.second * _multiplier * 1000;
         std::this_thread::sleep_for(
             std::chrono::milliseconds(static_cast<int>(time)));
 

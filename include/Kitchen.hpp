@@ -17,6 +17,7 @@
     #include "Utils.hpp"
     #include "SafeQueue.hpp"
     #include "Cook.hpp"
+    #include "IngredientMap.hpp"
 
 namespace Plazza {
 
@@ -45,8 +46,7 @@ namespace Plazza {
             double _multiplier;
             std::size_t _nbCook;
             double _restock;
-            std::unordered_map<Utils::IngredientType,
-                std::atomic<unsigned int>> _ingredients;
+            IngredientMap _ingredients;
             Utils::Clock _inactivity;
             Utils::Clock _oven;
             SafeQueue<Utils::Pizza> _orders;
