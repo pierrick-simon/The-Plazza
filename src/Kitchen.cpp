@@ -24,7 +24,7 @@ namespace Plazza {
             _cooks[i].start();
         for (std::size_t i = 0; i < Utils::NB_INGREDIENT; ++i) {
             auto ingredient = static_cast<Utils::IngredientType>(i);
-            _ingredientsStock.insert(std::make_pair(ingredient, START_INGREDIENT));
+            _ingredients.insert(std::make_pair(ingredient, START_INGREDIENT));
         }
         _inactivity = std::chrono::steady_clock::now();
         _commands[CLOSE] = [this]() {close();};

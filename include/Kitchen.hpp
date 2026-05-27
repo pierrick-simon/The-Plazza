@@ -45,7 +45,8 @@ namespace Plazza {
             double _multiplier;
             std::size_t _nbCook;
             double _restock;
-            Utils::Ingredient _ingredientsStock;
+            std::unordered_map<Utils::IngredientType,
+                std::atomic<unsigned int>> _ingredients;
             Utils::Clock _inactivity;
             Utils::Clock _oven;
             SafeQueue<Utils::Pizza> _orders;
