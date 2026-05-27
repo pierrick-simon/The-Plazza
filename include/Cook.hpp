@@ -9,30 +9,28 @@
 #define COOK_HPP_
 
 #include <thread>
-#include <mutex>
-#include <queue>
-#include <semaphore>
 
 #include "Utils.hpp"
-#include "IPC.hpp"
+#include "SafeQueue.hpp"
 
 namespace Plazza {
 
     class Cook {
         public:
-            Cook(std::mutex &mut, std::counting_semaphore<> &sem, IPC &ipc,
-                std::queue<Utils::Pizza> &orders, double multiplier, bool &loop);
+            Cook(SafeQueue<Utils::Pizza> &orders,
+                SafeQueue<Utils::Pizza> &finishedOrders,
+                double multiplier, bool &loop);
 
             void join() { _thread.join(); };
 
+            bool isActive() { return _active; };
+
         private:
             std::thread _thread;
-            std::mutex &_mut;
-            std::queue<Utils::Pizza> &_orders;
-            std::counting_semaphore<> &_sem;
-            IPC &_ipc;
+            SafeQueue<Utils::Pizza> &_orders;
+            SafeQueue<Utils::Pizza> &_finishedOrders;
             double _multiplier;
-            bool _available = true;
+            bool _active = false;
             bool &_loop;
 
             void run();

@@ -16,10 +16,11 @@ namespace Plazza {
     Kitchen::Kitchen(int fd, double multiplier,
         std::size_t nbCook, double restock) :
         _ipc(fd), _multiplier(multiplier), _nbCook(nbCook),
-        _restock(restock), _loop(true), _sem(0)
+        _restock(restock), _loop(true)
     {
-        _cooks.emplace_back(_mut, _sem, _ipc, _orders, _multiplier, _loop);
-        for (int i = 0; i < Utils::NB_INGREDIENT; i++) {
+        for (std::size_t i = 0; i < _nbCook; ++i)
+            _cooks.emplace_back(_orders, _finishedOrders, _multiplier, _loop);
+        for (std::size_t i = 0; i < Utils::NB_INGREDIENT; ++i) {
             auto ingredient = static_cast<Utils::IngredientType>(i);
             _ingredientsStock.insert(std::make_pair(ingredient, START_INGREDIENT));
         }
@@ -43,8 +44,8 @@ namespace Plazza {
             if (std::chrono::duration<double>(now - kitchen._inactivity)
                 .count() > OPEN_TIME)
                 break;
-            if (!kitchen._orders.empty())
-                kitchen._inactivity = now;
+            // if (!kitchen._orders.empty() || !kitchen._finishedOrders.empty() || kitchen.isActiveCook())
+            //     kitchen._inactivity = now;
             auto info = Connect::infoToRead({kitchen._ipc.getFd()});
             if (info.size() == 1 && info[0])
                 kitchen.readMsg();
@@ -52,6 +53,26 @@ namespace Plazza {
         kitchen._loop = false;
         for (auto &cook: kitchen._cooks)
             cook.join();
+    }
+
+    bool Kitchen::isActiveCook()
+    {
+        for (auto &cook: _cooks)
+            if (cook.isActive())
+                return true;
+        return false;
+    }
+
+    void Kitchen::sendFinishedOrders()
+    {
+        while (!_finishedOrders.empty()) {
+            auto pizza = _finishedOrders.pop();
+            
+            Packet<sizeof(Utils::Pizza)> packet;
+            packet << pizza;
+            _ipc.send(COMMAND);
+            _ipc.send(packet);
+        }
     }
 
     void Kitchen::readMsg()
@@ -78,11 +99,8 @@ namespace Plazza {
         if (_orders.size() < _nbCook * 2) {
             Utils::Pizza pizza;
             packet >> pizza;
-            _mut.lock();
             _orders.push(pizza);
             _ipc.send(OK);
-            _mut.unlock();
-            _sem.release();
             return;
         }
         _ipc.send(ERROR);
