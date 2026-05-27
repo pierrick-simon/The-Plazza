@@ -19,7 +19,7 @@
 
 namespace Plazza {
 
-    constexpr std::string_view LOG_FILE = "log.txt";
+    constexpr std::string_view LOG_FILE = "plazza.log";
 
     class Reception {
         public:
