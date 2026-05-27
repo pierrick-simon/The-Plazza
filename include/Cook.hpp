@@ -20,7 +20,7 @@ namespace Plazza {
         public:
             Cook(SafeQueue<Utils::Pizza> &orders,
                 SafeQueue<Utils::Pizza> &finishedOrders,
-                double multiplier, SafeValue<bool> &loop);
+                double multiplier, std::atomic<bool> &loop);
 
             void start() { _thread = std::thread([this]() { run(); }); };
 
@@ -34,7 +34,7 @@ namespace Plazza {
             SafeQueue<Utils::Pizza> &_finishedOrders;
             double _multiplier;
             bool _active = false;
-            SafeValue<bool> &_loop;
+            std::atomic<bool> &_loop;
 
             void run();
     };

@@ -13,7 +13,7 @@
 
 Plazza::Cook::Cook(SafeQueue<Utils::Pizza> &orders,
                 SafeQueue<Utils::Pizza> &finishedOrders,
-                double multiplier, SafeValue<bool> &loop):
+                double multiplier, std::atomic<bool> &loop):
     _orders(orders),
     _finishedOrders(finishedOrders),
     _multiplier(multiplier),
@@ -21,7 +21,7 @@ Plazza::Cook::Cook(SafeQueue<Utils::Pizza> &orders,
 
 void Plazza::Cook::run()
 {
-    while (_loop.get()) {
+    while (_loop.load()) {
         auto front = _orders.pop();
 
         _active = true;

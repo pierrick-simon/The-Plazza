@@ -51,7 +51,7 @@ namespace Plazza {
             SafeQueue<Utils::Pizza> _orders;
             SafeQueue<Utils::Pizza> _finishedOrders;
             std::vector<Cook> _cooks;
-            SafeValue<bool> _loop;
+            std::atomic<bool> _loop;
 
             std::unordered_map<int, std::function<void ()>> _commands;
     };

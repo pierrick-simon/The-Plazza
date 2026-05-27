@@ -45,31 +45,6 @@ namespace Plazza {
             std::condition_variable _cond_var;
             std::mutex _mut;
     };
-
-    template <typename T>
-    class SafeValue {
-        public:
-            SafeValue(T value): _value(value) {};
-
-            T get()
-            {
-                _mut.lock();
-                auto v = _value;
-                _mut.unlock();
-                return v;
-            };
-
-            void set(T value)
-            {
-                _mut.lock();
-                _value = value;
-                _mut.unlock();
-            };
-
-        private:
-            T _value;
-            std::mutex _mut;
-    };
 };
 
 #endif /* !SAFEQUEUE_HPP_ */

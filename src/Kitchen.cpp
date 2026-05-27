@@ -34,7 +34,7 @@ namespace Plazza {
     Kitchen::~Kitchen()
     {
         _ipc.send(CLOSE);
-        _loop.set(false);
+        _loop.store(false);
         for (auto &cook: _cooks) {
             cook.join();
         }
@@ -45,7 +45,7 @@ namespace Plazza {
     {
         Kitchen kitchen(fd, multiplier, nbCook, restock);
 
-        while (kitchen._loop.get()) {
+        while (kitchen._loop.load()) {
             kitchen.sendFinishedOrders();
             auto now = std::chrono::steady_clock::now();
             if (std::chrono::duration<double>(now - kitchen._inactivity)
@@ -90,13 +90,13 @@ namespace Plazza {
             if (find != _commands.end())
                 find->second();
         } catch (IPC::CloseException &_) {
-            _loop.set(false);
+            _loop.store(false);
         }
     }
 
     void Kitchen::close()
     {
-        _loop.set(false);
+        _loop.store(false);
     }
 
     void Kitchen::command()
