@@ -1,0 +1,32 @@
+#!/bin/bash
+
+BUILD_DIR=build
+
+if [ ! -d "$DIRECTORY" ];
+then
+    mkdir -p ./build/ ; cd ./build/ ; cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ ; cd ..
+fi
+if [ $# == 0 ] || [ $1 == "all" ]
+then
+    make -C $BUILD_DIR -j
+elif [ $# != 1 ]
+then
+    echo "Usage: $0 [rule]"
+elif [ $1 == "setup" ]
+then
+    rm -rf ./build/ ; mkdir -p ./build/ ; cd ./build/ ; cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ ; cd ..
+elif [ $1 == "installscript" ]
+then
+    sudo cp cbuild /usr/bin/
+elif [ $1 == "--coverage" ]
+then
+    make tests_run -C $BUILD_DIR -j && \
+    gcovr \
+        -r . \
+        --object-directory $BUILD_DIR \
+        --exclude tests/ \
+        --gcov-executable "llvm-cov gcov" \
+        --gcov-ignore-errors=no_working_dir_found
+else
+    make $1 -C $BUILD_DIR -j
+fi

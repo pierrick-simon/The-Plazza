@@ -5,7 +5,6 @@
 ** Reception
 */
 
-#include <unistd.h>
 #include <chrono>
 #include <iomanip>
 #include "Reception.hpp"

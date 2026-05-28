@@ -5,6 +5,7 @@
 ** Cook
 */
 
+#include <functional>
 #include "Cook.hpp"
 #include "Utils.hpp"
 #include "Kitchen.hpp"

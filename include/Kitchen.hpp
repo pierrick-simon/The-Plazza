@@ -12,7 +12,7 @@
     #include <vector>
     #include <string>
     #include <atomic>
-    #include "Plazza.hpp"
+    #include <functional>
     #include "IPC.hpp"
     #include "Utils.hpp"
     #include "SafeQueue.hpp"
