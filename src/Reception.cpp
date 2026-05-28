@@ -33,7 +33,7 @@ namespace Plazza {
         _file.close();
     }
 
-    std::pair<std::size_t, std::pair<const IPC &, std::size_t>>
+    std::map<std::size_t, std::pair<IPC, std::size_t>>::iterator
         Reception::openNewKitchen()
     {
         static std::size_t id = 0;
@@ -44,7 +44,7 @@ namespace Plazza {
         _kitchenFd.emplace(std::make_pair(id, std::make_pair(fd, 0)));
         logMsg("Kitchen[" + std::to_string(id) + "] Opened.");
         id++;
-        return *_kitchenFd.find(id - 1);
+        return _kitchenFd.find(id - 1);
     }
 
     bool Reception::sendOrderToKitchen(
@@ -72,8 +72,7 @@ namespace Plazza {
                 kitchen.first, pizza, kitchen.second.second))
                 return;
         }
-        openNewKitchen();
-        auto kitchen = _kitchenFd.find(_kitchenFd.size() - 1);
+        auto kitchen = openNewKitchen();
         sendOrderToKitchen(kitchen->second.first,
             kitchen->first, pizza, kitchen->second.second);
     }
