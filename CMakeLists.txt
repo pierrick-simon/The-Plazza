@@ -18,6 +18,7 @@ set(SRCS
     src/Utils.cpp
     src/Cook.cpp
     src/Chef.cpp
+    src/SafeStock.cpp
     src/IngredientMap.cpp
 )
 
