@@ -128,7 +128,6 @@ namespace Plazza {
     {
         auto status = makeStatus();
         _ipc.send(STATUS);
-        _ipc.send(_nbCook);
         for (std::size_t i = 0; i < _nbCook; ++i)
             _ipc.send<bool>(status.activeCooks[i]);
         for (auto &ingredient: status.ingredients) {

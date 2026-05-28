@@ -141,21 +141,18 @@ namespace Plazza {
             + Utils::pizzaToString(pizza) + " is ready to be served.");
     }
 
-    void Reception::printStatus(std::size_t id)
+    void Reception::receiveCooksInfo(std::map<std::size_t, IPC>::iterator &find)
     {
-        auto find = _kitchenFd.find(id);
-
-        if (find == _kitchenFd.end())
-            return;
-        auto nbCook = find->second.receive<std::size_t>();
-        std::cout << "\r";
-        std::cout << "Kitchen n°" << id << ":" << std::endl;
         std::cout << "  Cooks:" <<  std::endl;
-        for (std::size_t i = 0; i < nbCook; ++i) {
+        for (std::size_t i = 0; i < _nbCook; ++i) {
             auto status = find->second.receive<bool>();
             std::cout << "      Cook n°" << i << ": " <<
                 (status ? "active": "inactive") << std::endl;
         }
+    }
+
+    void Reception::receiveIngredientsInfo(std::map<std::size_t, IPC>::iterator &find)
+    {
         std::cout << "  Ingredients:" << std::endl;
         for (std::size_t i = 0; i < Utils::NB_INGREDIENT; ++i) {
             auto packet = find->second.receive
@@ -166,6 +163,18 @@ namespace Plazza {
                 Utils::_strIngredientType.at(ingredient.first) << ": " <<
                 ingredient.second << std::endl;
         }
+    }
+
+    void Reception::printStatus(std::size_t id)
+    {
+        auto find = _kitchenFd.find(id);
+
+        if (find == _kitchenFd.end())
+            return;
+        std::cout << "\r";
+        std::cout << "Kitchen n°" << id << ":" << std::endl;
+        receiveCooksInfo(find);
+        receiveIngredientsInfo(find);
         std::cout << "> " << std::flush;
         logMsg("Kitchen[" + std::to_string(id) + "] Status given");
     }
