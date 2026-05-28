@@ -67,8 +67,6 @@ namespace Plazza {
             static std::string typeToString(PizzaType type);
             static std::string sizeToString(PizzaSize size);
             static std::string pizzaToString(Pizza);
-
-        private:
             static const std::unordered_map<PizzaType, std::string> _strPizzaType;
             static const std::unordered_map<PizzaSize, std::string> _strPizzaSize;
     };
