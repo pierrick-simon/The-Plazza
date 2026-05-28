@@ -5,40 +5,83 @@
 ** Plazza
 */
 
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <algorithm>
+#include "../include/Exception.hpp"
 #include "Plazza.hpp"
 
 namespace Plazza {
-    Plazza::Plazza() : _window(sf::RenderWindow(
+    Plazza::Plazza(std::vector<std::string> args) : _window(sf::RenderWindow(
         sf::VideoMode(WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_BITS),
         "Plazza", sf::Style::Close | sf::Style::Resize)),
-        _view(sf::FloatRect(0.0, 0.0, WINDOW_SIZE_X, WINDOW_SIZE_Y))
+        _view(sf::FloatRect(0.0, 0.0, WINDOW_SIZE_X, WINDOW_SIZE_Y)),
+        _font(loadFromFile("public/Font.ttf")),
+        _command(_font)
     {
+        if (args.size() != NBARGS) {
+            throw WrongArgsException();
+        }
+        double multiplier;
+        std::istringstream stream1(args[MULTIPLIER]);
+        stream1 >> multiplier;
+        std::size_t nbCook;
+        std::istringstream stream2(args[NBCOOK]);
+        stream2 >> nbCook;
+        std::size_t restock;
+        std::istringstream stream3(args[RESTOCK]);
+        stream3 >> restock;
+        if (stream1.fail() || !stream1.eof() || multiplier < 0
+            || stream2.fail() || !stream2.eof() || nbCook == 0
+            || stream3.fail() || !stream3.eof() || restock < 0)
+            throw WrongArgsException();
+        _reception.setMultiplier(multiplier);
+        _reception.setNbCook(nbCook);
+        _reception.setRestock(restock);
+
         _window.setFramerateLimit(FPS);
         _window.setView(_view);
         _rec.setSize({WINDOW_SIZE_X, WINDOW_SIZE_Y});
         _rec.setFillColor(BACKGROUND_COLOR);
     }
 
-        void Plazza::run()
+    sf::Font Plazza::loadFromFile(std::string file)
+    {
+        sf::Font font;
+        font.loadFromFile(file);
+        return font;
+    }
+
+    void Plazza::run()
     {
         while (_window.isOpen()) {
             event();
             _window.clear(sf::Color::Black);
             _window.setView(_view);
             _window.draw(_rec);
+            if (_command.getShow())
+                _command.draw(_window);
             _window.display();
+            _reception.checkKitchens();
         }
     }
 
     void Plazza::event()
     {
         sf::Event event;
+        sf::Vector2f mousePos = _window.mapPixelToCoords(sf::Mouse::getPosition(_window));
         while (_window.pollEvent(event)) {
+            if (_command.getShow())
+                _command.event(mousePos, event, _reception);
             handleResize(event);
             if (event.type == sf::Event::Closed ||
                     (event.type == sf::Event::KeyPressed
-                        && event.key.code == sf::Keyboard::Q))
+                        && event.key.code == sf::Keyboard::Escape))
                 _window.close();
+            if (event.type == sf::Event::KeyPressed
+                && event.key.code == sf::Keyboard::N)
+                _command.reset();
         }
     }
 

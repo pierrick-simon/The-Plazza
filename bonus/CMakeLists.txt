@@ -23,6 +23,8 @@ set(SRCS
 
 set(BONUS_SRCS
     src/Plazza.cpp
+    src/Command.cpp
+    src/AButton.cpp
 )
 
 set(HEADERS
