@@ -57,8 +57,9 @@ namespace Plazza {
         ipc.send(COMMAND);
         ipc.send(packet);
         if (ipc.receive<int>() == OK) {
+            ++count;
             logMsg("Kitchen[" + std::to_string(id) + "] Add "
-                + Utils::pizzaToString(pizza) + " to the list.");
+                + Utils::pizzaToString(pizza) + " to the list." + std::to_string(count));
             status = true;
         }
         return status;
@@ -71,9 +72,10 @@ namespace Plazza {
                 kitchen.first, pizza, kitchen.second.second))
                 return;
         }
-        auto kitchen = openNewKitchen();
-        sendOrderToKitchen(kitchen.second.first,
-            kitchen.first, pizza, kitchen.second.second);
+        openNewKitchen();
+        auto kitchen = _kitchenFd.find(_kitchenFd.size() - 1);
+        sendOrderToKitchen(kitchen->second.first,
+            kitchen->first, pizza, kitchen->second.second);
     }
 
     void Reception::order(std::map<Utils::Pizza, std::size_t> pizzas)
@@ -140,8 +142,9 @@ namespace Plazza {
         auto packet = find->second.first.receive<Packet<sizeof(Utils::Pizza)>>();
         Utils::Pizza pizza;
         packet >> pizza;
+        --find->second.second;
         logMsg("Kitchen[" + std::to_string(id) + "] Pizza "
-            + Utils::pizzaToString(pizza) + " is ready to be served.");
+            + Utils::pizzaToString(pizza) + " is ready to be served." + std::to_string(find->second.second));
     }
 
     void Reception::receiveCooksInfo(IPC &ipc)
@@ -176,7 +179,7 @@ namespace Plazza {
             return;
         std::cout << "\r";
         std::cout << "Kitchen n°" << id << ":" << std::endl;
-        std::cout << "  Pizza to be done: " << find->second.second << std::endl;
+        std::cout << "  Pizza in queue: " << find->second.second << std::endl;
         receiveCooksInfo(find->second.first);
         receiveIngredientsInfo(find->second.first);
         std::cout << "> " << std::flush;
