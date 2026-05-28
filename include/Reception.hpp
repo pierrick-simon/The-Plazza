@@ -35,21 +35,23 @@ namespace Plazza {
             void setRestock(std::size_t restock) {_restock = restock;}
 
         private:
-            std::pair<std::size_t, const IPC &>openNewKitchen();
+            std::pair<std::size_t, std::pair<const IPC &, std::size_t>>
+                openNewKitchen();
             void logMsg(std::string);
-            bool sendOrderToKitchen(const IPC &ipc, std::size_t, Utils::Pizza);
+            bool sendOrderToKitchen(const IPC &ipc, std::size_t,
+                Utils::Pizza, std::size_t &count);
             void sendOrder(Utils::Pizza);
             void closeKitchen(std::size_t);
             void orderDone(std::size_t);
-            void receiveCooksInfo(std::map<std::size_t, IPC>::iterator &find);
-            void receiveIngredientsInfo(std::map<std::size_t, IPC>::iterator &find);
+            void receiveCooksInfo(IPC &ipc);
+            void receiveIngredientsInfo(IPC &ipc);
             void printStatus(std::size_t);
 
             double _multiplier = 1;
             std::size_t _nbCook = 1;
             std::size_t _restock = 1;
             std::ofstream _file;
-            std::map<std::size_t, IPC> _kitchenFd;
+            std::map<std::size_t, std::pair<IPC, std::size_t>> _kitchenFd;
             std::unordered_map<int, std::function<void (std::size_t)>> _commands;
     };
 }
