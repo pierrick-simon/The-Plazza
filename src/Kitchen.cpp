@@ -14,7 +14,7 @@
 
 namespace Plazza {
     Kitchen::Kitchen(int fd, double multiplier,
-        std::size_t nbCook, double restock) :
+        std::size_t nbCook, std::size_t restock) :
         _ipc(fd), _multiplier(multiplier), _nbCook(nbCook),
         _restock(restock), _loop(true), _ingredients(Utils::START_INGREDIENT)
     {
@@ -38,7 +38,7 @@ namespace Plazza {
     }
 
     void Kitchen::run(int fd, double multiplier,
-        std::size_t nbCook, double restock)
+        std::size_t nbCook, std::size_t restock)
     {
         Kitchen kitchen(fd, multiplier, nbCook, restock);
 

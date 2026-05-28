@@ -26,7 +26,7 @@ namespace Plazza {
         std::size_t nbCook;
         std::istringstream stream2(args[NBCOOK]);
         stream2 >> nbCook;
-        double restock;
+        std::size_t restock;
         std::istringstream stream3(args[RESTOCK]);
         stream3 >> restock;
         if (stream1.fail() || !stream1.eof() || multiplier < 0

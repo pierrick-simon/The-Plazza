@@ -32,7 +32,7 @@ namespace Plazza {
 
             void setMultiplier(double multiplier) {_multiplier = multiplier;}
             void setNbCook(double nbCook) {_nbCook = nbCook;}
-            void setRestock(double restock) {_restock = restock;}
+            void setRestock(std::size_t restock) {_restock = restock;}
 
         private:
             std::pair<std::size_t, const IPC &>openNewKitchen();
@@ -44,7 +44,7 @@ namespace Plazza {
 
             double _multiplier = 1;
             std::size_t _nbCook = 1;
-            double _restock = 1;
+            std::size_t _restock = 1;
             std::ofstream _file;
             std::map<std::size_t, IPC> _kitchenFd;
             std::unordered_map<int, std::function<void (std::size_t)>> _commands;

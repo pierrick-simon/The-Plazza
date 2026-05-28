@@ -28,13 +28,13 @@ namespace Plazza {
     class Kitchen {
         public:
             static void run(int fd, double multiplier,
-                std::size_t nbCook, double _restock);
+                std::size_t nbCook, std::size_t _restock);
 
             static const Utils::Recipes recipes;
 
         private:
             Kitchen(int fd, double multiplier,
-                std::size_t nbCook, double restock);
+                std::size_t nbCook, std::size_t restock);
             ~Kitchen();
             void close();
             void command();
@@ -45,7 +45,7 @@ namespace Plazza {
             IPC _ipc;
             double _multiplier;
             std::size_t _nbCook;
-            double _restock;
+            std::size_t _restock;
             IngredientMap _ingredients;
             Utils::Clock _inactivity;
             Utils::Clock _oven;
