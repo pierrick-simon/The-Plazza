@@ -117,7 +117,6 @@ namespace Plazza {
         Utils::Pizza pizza;
         packet >> pizza;
         _orders.push(pizza);
-        _ipc.send(OK);
     }
 
     void Kitchen::status()
