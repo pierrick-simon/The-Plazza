@@ -16,7 +16,7 @@ namespace Plazza {
     {
         auto clamped = ((_max && v > _max) ? _max: v);
         std::unique_lock lock(_mut);
-        for (auto i = _value; i <= clamped; ++i) {
+        for (auto i = _value; i < clamped; ++i) {
             ++_value;
             _cond_var.notify_one();
         }
