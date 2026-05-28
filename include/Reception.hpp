@@ -41,6 +41,7 @@ namespace Plazza {
             void sendOrder(Utils::Pizza);
             void closeKitchen(std::size_t);
             void orderDone(std::size_t);
+            void printStatus(std::size_t);
 
             double _multiplier = 1;
             std::size_t _nbCook = 1;

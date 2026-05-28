@@ -25,6 +25,11 @@ namespace Plazza {
     constexpr std::size_t START_INGREDIENT = 5;
     constexpr double OPEN_TIME = 5.0;
 
+    class KitchenStatus {
+        public:
+            std::vector<bool> activeCooks;
+            std::unordered_map<Utils::IngredientType, std::size_t> ingredients;
+    };
 
     class Kitchen {
         public:
@@ -39,9 +44,11 @@ namespace Plazza {
             ~Kitchen();
             void close();
             void command();
+            void status();
             void readMsg();
             std::size_t getActiveCookNumber();
             void sendFinishedOrders();
+            KitchenStatus makeStatus();
 
             IPC _ipc;
             double _multiplier;
@@ -59,6 +66,8 @@ namespace Plazza {
 
             std::unordered_map<int, std::function<void ()>> _commands;
     };
+
+    std::ostream& operator<<(std::ostream& os, const KitchenStatus& obj);
 }
 
 #endif

@@ -20,6 +20,8 @@ namespace Plazza {
             SafeStock &operator<<(const std::size_t &v);
             SafeStock &operator>>(const std::size_t &v);
 
+            std::size_t seek();
+
         private:
             std::size_t _value;
             std::size_t _max;

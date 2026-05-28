@@ -22,6 +22,8 @@ namespace Plazza {
 
             void refill(std::size_t v = 0);
             void consume(const Utils::Ingredient &ingredients);
+            
+            Utils::Ingredient seek();
 
         private:
             std::unordered_map<Utils::IngredientType, SafeStock> _map;

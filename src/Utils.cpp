@@ -76,4 +76,18 @@ namespace Plazza {
         {Utils::PizzaSize::XL, "XL"},
         {Utils::PizzaSize::XXL, "XXL"},
     };
+
+    const std::unordered_map<Utils::IngredientType, std::string>
+        Utils::_strIngredientType =
+    {
+        {Utils::IngredientType::DOUGH, "Dough"},
+        {Utils::IngredientType::TOMATO, "Tomato"},
+        {Utils::IngredientType::GRUYERE, "Gruyere"},
+        {Utils::IngredientType::HAM, "Ham"},
+        {Utils::IngredientType::MUSHROOMS, "Mushrooms"},
+        {Utils::IngredientType::STEAK, "Steak"},
+        {Utils::IngredientType::EGGPLANT, "Eggplant"},
+        {Utils::IngredientType::GOAT_CHEESE, "Goat Cheese"},
+        {Utils::IngredientType::CHIEF_LOVE, "Chief Love"},
+    };
 }

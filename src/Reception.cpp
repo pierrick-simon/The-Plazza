@@ -19,6 +19,7 @@ namespace Plazza {
         logMsg("Reception Opened.");
         _commands[CLOSE] = [this](std::size_t id) {closeKitchen(id);};
         _commands[COMMAND] = [this](std::size_t id) {orderDone(id);};
+        _commands[STATUS] = [this](std::size_t id) {printStatus(id);};
     }
 
     Reception::~Reception()
@@ -82,6 +83,9 @@ namespace Plazza {
 
     void Reception::status()
     {
+        for (auto &kitchen: _kitchenFd)
+            kitchen.second.send(STATUS);
+        logMsg("Status asked");
     }
 
     void Reception::checkKitchens()
@@ -135,6 +139,35 @@ namespace Plazza {
         packet >> pizza;
         logMsg("Kitchen[" + std::to_string(id) + "] Pizza "
             + Utils::pizzaToString(pizza) + " is ready to be served.");
+    }
+
+    void Reception::printStatus(std::size_t id)
+    {
+        auto find = _kitchenFd.find(id);
+
+        if (find == _kitchenFd.end())
+            return;
+        auto nbCook = find->second.receive<std::size_t>();
+        std::cout << "\r";
+        std::cout << "Kitchen n°" << id << ":" << std::endl;
+        std::cout << "  Cooks:" <<  std::endl;
+        for (std::size_t i = 0; i < nbCook; ++i) {
+            auto status = find->second.receive<bool>();
+            std::cout << "      Cook n°" << i << ": " <<
+                (status ? "active": "inactive") << std::endl;
+        }
+        std::cout << "  Ingredients:" << std::endl;
+        for (std::size_t i = 0; i < Utils::NB_INGREDIENT; ++i) {
+            auto packet = find->second.receive
+                <Packet<sizeof(std::pair<Utils::IngredientType, std::size_t>)>>();
+            std::pair<Utils::IngredientType, std::size_t> ingredient;
+            packet >> ingredient;
+            std::cout << "      " <<
+                Utils::_strIngredientType.at(ingredient.first) << ": " <<
+                ingredient.second << std::endl;
+        }
+        std::cout << "> " << std::flush;
+        logMsg("Kitchen[" + std::to_string(id) + "] Status given");
     }
 
     void Reception::logMsg(std::string msg)
