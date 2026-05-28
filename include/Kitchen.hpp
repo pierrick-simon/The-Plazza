@@ -17,6 +17,7 @@
     #include "Utils.hpp"
     #include "SafeQueue.hpp"
     #include "Cook.hpp"
+    #include "Chef.hpp"
     #include "IngredientMap.hpp"
 
 namespace Plazza {
@@ -52,6 +53,8 @@ namespace Plazza {
             SafeQueue<Utils::Pizza> _orders;
             SafeQueue<Utils::Pizza> _finishedOrders;
             std::vector<Cook> _cooks;
+            Chef _chef;
+
             std::atomic<bool> _loop;
 
             std::unordered_map<int, std::function<void ()>> _commands;
