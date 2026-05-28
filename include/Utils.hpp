@@ -18,6 +18,7 @@ namespace Plazza {
     constexpr int CLOSE = 300;
     constexpr int OK = 200;
     constexpr int COMMAND = 230;
+    constexpr int STATUS = 232;
     constexpr int ERROR = 500;
 
     class Utils {
@@ -69,6 +70,7 @@ namespace Plazza {
             static std::string pizzaToString(Pizza);
             static const std::unordered_map<PizzaType, std::string> _strPizzaType;
             static const std::unordered_map<PizzaSize, std::string> _strPizzaSize;
+            static const std::unordered_map<IngredientType, std::string> _strIngredientType;
     };
 
 

@@ -28,6 +28,7 @@ namespace Plazza {
         _inactivity = std::chrono::steady_clock::now();
         _commands[CLOSE] = [this]() {close();};
         _commands[COMMAND] = [this]() {command();};
+        _commands[STATUS] = [this]() {status();};
     }
 
     Kitchen::~Kitchen()
@@ -94,6 +95,16 @@ namespace Plazza {
         }
     }
 
+    KitchenStatus Kitchen::makeStatus()
+    {
+        std::vector<bool> activeCooks;
+
+        activeCooks.reserve(_cooks.size());
+        for (auto &cook: _cooks)
+            activeCooks.push_back(cook.isActive());
+        return KitchenStatus{activeCooks, _ingredients.seek()};
+    }
+
     void Kitchen::close()
     {
         _loop.store(false);
@@ -111,6 +122,19 @@ namespace Plazza {
             return;
         }
         _ipc.send(ERROR);
+    }
+
+    void Kitchen::status()
+    {
+        auto status = makeStatus();
+        _ipc.send(STATUS);
+        for (std::size_t i = 0; i < _nbCook; ++i)
+            _ipc.send<bool>(status.activeCooks[i]);
+        for (auto &ingredient: status.ingredients) {
+            Packet<sizeof(std::pair<Utils::IngredientType, std::size_t>)> packet;
+            packet << ingredient;
+            _ipc.send(packet);
+        }
     }
 
     const Utils::Recipes Kitchen::recipes =

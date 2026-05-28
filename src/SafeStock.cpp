@@ -34,4 +34,11 @@ namespace Plazza {
         }
         return *this;
     }
+
+    std::size_t SafeStock::seek()
+    {
+        std::unique_lock lock(_mut); // en vrai a voir sah y'a un monde ou y'a pas besoin
+        return _value;
+    }
+
 }
