@@ -47,7 +47,7 @@ namespace Plazza {
         return _kitchenFd.find(id - 1);
     }
 
-    bool Reception::sendOrderToKitchen(
+    void Reception::sendOrderToKitchen(
         const IPC &ipc, std::size_t id, Utils::Pizza pizza, std::size_t &count)
     {
         Packet<sizeof(Utils::Pizza)> packet;
@@ -56,21 +56,18 @@ namespace Plazza {
         packet << pizza;
         ipc.send(COMMAND);
         ipc.send(packet);
-        if (ipc.receive<int>() == OK) {
-            ++count;
-            logMsg("Kitchen[" + std::to_string(id) + "] Add "
-                + Utils::pizzaToString(pizza) + " to the list." + std::to_string(count));
-            status = true;
-        }
-        return status;
+        ++count;
+        logMsg("Kitchen[" + std::to_string(id) + "] Add "
+            + Utils::pizzaToString(pizza) + " to the list." + std::to_string(count));
+        status = true;
     }
 
     void Reception::sendOrder(Utils::Pizza pizza)
     {
         for (auto &kitchen: _kitchenFd) {
-            if (sendOrderToKitchen(kitchen.second.first,
-                kitchen.first, pizza, kitchen.second.second))
-                return;
+            if (kitchen.second.second < _nbCook * 2)
+                return sendOrderToKitchen(kitchen.second.first,
+                    kitchen.first, pizza, kitchen.second.second);
         }
         auto kitchen = openNewKitchen();
         sendOrderToKitchen(kitchen->second.first,
@@ -89,7 +86,7 @@ namespace Plazza {
     {
         for (auto &kitchen: _kitchenFd)
             kitchen.second.first.send(STATUS);
-        logMsg("Status asked");
+        logMsg("Status Command Executed");
     }
 
     void Reception::checkKitchens()

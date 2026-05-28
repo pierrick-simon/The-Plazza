@@ -38,7 +38,7 @@ namespace Plazza {
             std::map<std::size_t, std::pair<IPC, std::size_t>>::iterator
                 openNewKitchen();
             void logMsg(std::string);
-            bool sendOrderToKitchen(const IPC &ipc, std::size_t,
+            void sendOrderToKitchen(const IPC &ipc, std::size_t,
                 Utils::Pizza, std::size_t &count);
             void sendOrder(Utils::Pizza);
             void closeKitchen(std::size_t);
