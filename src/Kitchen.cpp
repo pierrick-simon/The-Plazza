@@ -74,11 +74,9 @@ namespace Plazza {
 
     void Kitchen::sendFinishedOrders()
     {
-        while (!_finishedOrders.empty()) {
-            auto pizza = _finishedOrders.pop();
-            
+        while (auto pizza = _finishedOrders.tryPop()) {
             Packet<sizeof(Utils::Pizza)> packet;
-            packet << pizza;
+            packet << *pizza;
             _ipc.send(COMMAND);
             _ipc.send(packet);
         }

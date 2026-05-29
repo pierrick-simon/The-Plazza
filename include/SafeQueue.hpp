@@ -46,8 +46,24 @@ namespace Plazza {
                 return value;
             }
 
-            bool empty() { return _queue.empty(); }
-            std::size_t size() { return _queue.size(); }
+            std::optional<T> tryPop() {
+                std::unique_lock lock(_mut);
+                if (_queue.empty() || _shutdown)
+                    return std::nullopt;
+                auto value = _queue.front();
+                _queue.pop();
+                return value;
+            }
+
+            bool empty() {
+                std::unique_lock lock(_mut);
+                return _queue.empty();
+            }
+
+            std::size_t size() {
+                std::unique_lock lock(_mut);
+                return _queue.size();
+            }
 
             class SafeQueueException : public PlazzaException {
                 public:
