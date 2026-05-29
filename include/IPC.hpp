@@ -16,6 +16,20 @@ namespace Plazza {
     class IPC {
         public:
             IPC(int fd) : _fd(fd) {};
+            IPC(const IPC&) = delete;
+            IPC& operator=(const IPC&) = delete;
+
+            IPC(IPC&& other) noexcept : _fd(other._fd) { other._fd = -1; }
+            IPC& operator=(IPC&& other) noexcept
+            {
+                if (this != &other) {
+                    if (_fd != -1) close(_fd);
+                    _fd = other._fd;
+                    other._fd = -1;
+                }
+                return *this;
+            }
+
             ~IPC()
             {
                 if (_fd != -1)

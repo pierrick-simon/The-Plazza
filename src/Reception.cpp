@@ -104,22 +104,25 @@ namespace Plazza {
         auto infos = Connect::infoToRead(fds);
         if (infos.size() != ids.size())
             return;
+        std::vector<std::pair<std::size_t, int>> toProcess;
         for (std::size_t i = 0; i < infos.size(); i++) {
             if (!infos[i])
                 continue;
-            auto kitchenFd = _kitchenFd.find(ids[i]);
-            if (kitchenFd == _kitchenFd.end())
+            if (_kitchenFd.find(ids[i]) == _kitchenFd.end())
                 continue;
             try {
-                int value = kitchenFd->second.first.receive<int>();
-                auto find = _commands.find(value);
-                if (find == _commands.end())
-                    continue;
-                find->second(ids[i]);
+                int value = _kitchenFd.at(ids[i]).first.receive<int>();
+                toProcess.emplace_back(ids[i], value);
             } catch (IPC::CloseException &_) {
                 logMsg("Kitchen[" + std::to_string(ids[i]) + "] Closed unexpectedly.");
                 closeKitchen(ids[i]);
             }
+        }
+        for (auto &[id, value] : toProcess) {
+            auto find = _commands.find(value);
+            if (find == _commands.end())
+                continue;
+            find->second(id);
         }
     }
 
