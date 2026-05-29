@@ -31,12 +31,16 @@ void Plazza::Cook::run()
 
         auto recipe = Kitchen::recipes.at(front.first);
         _ingredients.consume(recipe.first);
+        if (!_loop.load())
+            return;
         auto time = recipe.second * _multiplier * 1000;
         std::this_thread::sleep_for(
             std::chrono::milliseconds(static_cast<int>(time)));
 
         _active = false;
 
+        if (!_loop.load())
+            return;
         _finishedOrders.push(front);
     }
 }

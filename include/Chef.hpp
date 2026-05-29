@@ -23,7 +23,7 @@ namespace Plazza {
 
             void start() { _thread = std::thread([this]() { run(); }); };
 
-            void join() { _thread.joinable(); };
+            void join() { _thread.detach(); };
 
         private:
             std::thread _thread;
