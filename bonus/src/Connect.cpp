@@ -28,7 +28,7 @@ namespace Plazza {
                 if (fd != sv[1])
                     close(fd);
             func(sv[1]);
-            exit(0);
+            _exit(0);
         }
         close(sv[1]);
         return sv[0];

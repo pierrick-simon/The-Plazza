@@ -28,6 +28,26 @@ namespace Plazza {
         _wall.setScale(WALL_SCALE_X, WALL_SCALE_Y);
         for (std::size_t i = 0; i < _nbCook; i++)
             _cooks.push_back({0, 0, {}});
+        _ingredient.setScale(INGREDIANT_SCALE, INGREDIANT_SCALE);
+        _ingredient.setOrigin(INGREDIANT_REAL_SIZE / 2.0, INGREDIANT_REAL_SIZE / 2.0);
+        _ingredientTexture.emplace(Utils::DOUGH, sf::Texture());
+        _ingredientTexture.at(Utils::DOUGH).loadFromFile("public/dough.png");
+        _ingredientTexture.emplace(Utils::TOMATO, sf::Texture());
+        _ingredientTexture.at(Utils::TOMATO).loadFromFile("public/tomato.png");
+        _ingredientTexture.emplace(Utils::GRUYERE, sf::Texture());
+        _ingredientTexture.at(Utils::GRUYERE).loadFromFile("public/cheese.png");
+        _ingredientTexture.emplace(Utils::HAM, sf::Texture());
+        _ingredientTexture.at(Utils::HAM).loadFromFile("public/ham.png");
+        _ingredientTexture.emplace(Utils::MUSHROOMS, sf::Texture());
+        _ingredientTexture.at(Utils::MUSHROOMS).loadFromFile("public/mushroom.png");
+        _ingredientTexture.emplace(Utils::EGGPLANT, sf::Texture());
+        _ingredientTexture.at(Utils::EGGPLANT).loadFromFile("public/eggplant.png");
+        _ingredientTexture.emplace(Utils::GOAT_CHEESE, sf::Texture());
+        _ingredientTexture.at(Utils::GOAT_CHEESE).loadFromFile("public/goat.png");
+        _ingredientTexture.emplace(Utils::STEAK, sf::Texture());
+        _ingredientTexture.at(Utils::STEAK).loadFromFile("public/steak.png");
+        _ingredientTexture.emplace(Utils::CHIEF_LOVE, sf::Texture());
+        _ingredientTexture.at(Utils::CHIEF_LOVE).loadFromFile("public/heart.png");
         _clock.restart();
     }
 
@@ -120,6 +140,14 @@ namespace Plazza {
         _text.setOrigin(0, 0);
         _text.setPosition(sf::Vector2f(_pos.x + GAP, _pos.y + BOX_Y - COOK_BOX_Y + GAP));
         win.draw(_text);
+        _text.setString("Queue : " + std::to_string(_info._queue) + " / " + std::to_string(_nbCook * 2));
+        _text.setCharacterSize(TEXT_SIZE);
+        _text.setStyle(sf::Text::Regular);
+        _text.setFillColor(sf::Color::Black);
+        sf::FloatRect rc = _text.getLocalBounds();
+        _text.setOrigin(rc.left + rc.width, 0);
+        _text.setPosition(sf::Vector2f(_pos.x + BOX_X - GAP, _pos.y + BOX_Y - COOK_BOX_Y + GAP));
+        win.draw(_text);
     }
 
     void KitchenDisplay::drawShelf(sf::RenderWindow &win)
@@ -133,11 +161,11 @@ namespace Plazza {
         float size = (SHELF_X - GAP * 2.0 - SMALL_GAP * float(_info._ingredient.size() - 1)) / float(_info._ingredient.size()); 
         _rec.setOrigin(0, 0);
         _rec.setOutlineColor(sf::Color::Black);
-        _rec.setOutlineThickness(2);
+        _rec.setOutlineThickness(1);
         for (size_t i = 0; i < _info._ingredient.size(); i++) {
             _rec.setSize({size, ITEM_Y});
             _rec.setPosition(_pos.x + (BOX_X - SHELF_X) / 2 + GAP + (size + SMALL_GAP) * float(i), _pos.y + SHELF_POS_Y - ITEM_Y);
-            _rec.setFillColor(sf::Color::Transparent);
+            _rec.setFillColor(LIGHTGREY);
             win.draw(_rec);
             float percentage = float(iter->second) / 5.0;
             _rec.setSize({size, ITEM_Y * percentage});
@@ -149,6 +177,12 @@ namespace Plazza {
             else
                 _rec.setFillColor(RED);
             win.draw(_rec);
+            auto find = _ingredientTexture.find(iter->first);
+            if (find != _ingredientTexture.end()) {
+                _ingredient.setTexture(find->second);
+                _ingredient.setPosition(_pos.x + (BOX_X - SHELF_X) / 2 + GAP + (size + SMALL_GAP) * float(i) + size / 2.0, _pos.y + SHELF_POS_Y - ITEM_Y / 2.0);
+                win.draw(_ingredient);
+            }
             iter++;
         }
         _rec.setOutlineThickness(0);

@@ -19,6 +19,7 @@ namespace Plazza {
     struct KitchenInfo {
         std::vector<bool> _cook;
         std::unordered_map<Utils::IngredientType, std::size_t> _ingredient;
+        std::size_t _queue;
     };
 
     struct CookInfo {
@@ -62,17 +63,19 @@ namespace Plazza {
             sf::Texture _wallTexture;
             sf::Sprite _wall;
             std::vector<CookInfo> _cooks;
+            std::unordered_map<Utils::IngredientType, sf::Texture> _ingredientTexture;
+            sf::Sprite _ingredient;
 
             constexpr static unsigned int TEXT_SIZE = 20;
             constexpr static float GAP = 5;
             constexpr static float SMALL_GAP = 1;
             constexpr static float BOX_X = WINDOW_SIZE_X / 5 - GAP * 2;
             constexpr static float BOX_Y = WINDOW_SIZE_Y / 2  - GAP * 2;
-            constexpr static float TITLE_BOX_Y = 75;
+            constexpr static float TITLE_BOX_Y = 50;
             constexpr static float COOK_BOX_Y = 75;
             constexpr static float COOK_RADIUS = 10;
             constexpr static float SHELF_POS_Y = TITLE_BOX_Y + 125;
-            constexpr static float SHELF_Y = 10;
+            constexpr static float SHELF_Y = 15;
             constexpr static float SHELF_X = BOX_X * 0.8;
             constexpr static float ITEM_Y = 75;
 
@@ -102,6 +105,10 @@ namespace Plazza {
             constexpr static float WALL_HEIGHT = BOX_Y - TITLE_BOX_Y - FLOOR_HEIGHT - COOK_BOX_Y;
             constexpr static float WALL_SCALE_X = BOX_X / 638;
             constexpr static float WALL_SCALE_Y = WALL_HEIGHT / 350;
+
+            constexpr static float INGREDIANT_SIZE = 25.0;
+            constexpr static float INGREDIANT_REAL_SIZE = 240.0;
+            constexpr static float INGREDIANT_SCALE = INGREDIANT_SIZE / INGREDIANT_REAL_SIZE;
     };
 }
 
