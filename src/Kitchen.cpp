@@ -39,6 +39,7 @@ namespace Plazza {
             cook.join();
         }
         _chef.join();
+        exit(0);
     }
 
     void Kitchen::run(int fd, double multiplier,
@@ -114,14 +115,9 @@ namespace Plazza {
     {
         auto packet = _ipc.receive<Packet<sizeof(Utils::Pizza)>>();
 
-        if (_orders.size() + getActiveCookNumber() < _nbCook * 2) {
-            Utils::Pizza pizza;
-            packet >> pizza;
-            _orders.push(pizza);
-            _ipc.send(OK);
-            return;
-        }
-        _ipc.send(ERROR);
+        Utils::Pizza pizza;
+        packet >> pizza;
+        _orders.push(pizza);
     }
 
     void Kitchen::status()
