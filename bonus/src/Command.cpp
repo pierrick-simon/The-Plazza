@@ -98,11 +98,10 @@ namespace Plazza {
 
     const std::unordered_map<std::size_t, std::string> Command::_nbPizza =
     {
-        {1, "1"},
-        {10, "10"},
-        {50, "50"},
-        {100, "100"},
         {500, "500"},
-        {1000, "1000"},
+        {100, "100"},
+        {50, "50"},
+        {10, "10"},
+        {1, "1"},
     };
 };

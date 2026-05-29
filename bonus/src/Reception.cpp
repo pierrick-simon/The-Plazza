@@ -183,7 +183,7 @@ namespace Plazza {
             return;
         auto cook = receiveCooksInfo(find->second._ipc);
         auto ingredient = receiveIngredientsInfo(find->second._ipc);
-        find->second._display.update({cook, ingredient});
+        find->second._display.update({cook, ingredient, find->second._queue});
         find->second._status = false;
         find->second._elapsed = 0;
     }
@@ -201,29 +201,26 @@ namespace Plazza {
     {
         std::size_t i = 0;
 
+        auto elapsed = _clock.getElapsedTime().asMilliseconds();
         for (auto &kitchen: _kitchenFd) {
             float col = i % NB_X_KITCHEN;
             float line = (i - col) / NB_X_KITCHEN;
             sf::Vector2f pos(GAP + (GAP * 2 + BOX_X) * col, GAP + (GAP * 2 + BOX_Y) * line - _pos.y);
             kitchen.second._display.draw(win, pos);
             i++;
-        }
-
-    }
-
-    void Reception::event(sf::Event &event)
-    {
-        auto elapsed = _clock.getElapsedTime().asMilliseconds();
-        for (auto &kitchen: _kitchenFd) {
             if (kitchen.second._status)
                 continue;
             kitchen.second._elapsed += elapsed;
-            if (kitchen.second._elapsed < 100)
+            if (kitchen.second._elapsed < 300)
                 continue;
             kitchen.second._status = true;
             kitchen.second._ipc.send(STATUS);
         }
         _clock.restart();
+    }
+
+    void Reception::event(sf::Event &event)
+    {
         if (event.type == sf::Event::MouseWheelMoved) {
             _pos.y -= event.mouseWheel.delta * 30;
             float col = _kitchenFd.size() % NB_X_KITCHEN;

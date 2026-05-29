@@ -18,6 +18,7 @@ namespace Plazza {
     constexpr unsigned int CHAR_SIZE = 40; 
     inline const sf::Color LIGHTGREY = sf::Color(150, 150, 150);
     inline const sf::Color DARKBLUE = sf::Color(51, 75, 99);
+    inline const sf::Color LIGHTBLUE = sf::Color(135, 206, 255);
     inline const sf::Color GREEN = sf::Color(50, 255, 50);
     inline const sf::Color RED = sf::Color(255, 50, 50);
     inline const sf::Color ORANGE = sf::Color(255, 128,  0);
