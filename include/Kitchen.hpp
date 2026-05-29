@@ -66,8 +66,6 @@ namespace Plazza {
 
             std::unordered_map<int, std::function<void ()>> _commands;
     };
-
-    std::ostream& operator<<(std::ostream& os, const KitchenStatus& obj);
 }
 
 #endif
