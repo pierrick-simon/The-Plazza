@@ -20,6 +20,9 @@ namespace Plazza {
     inline const sf::Color DARKBLUE = sf::Color(51, 75, 99);
     inline const sf::Color GREEN = sf::Color(50, 255, 50);
     inline const sf::Color RED = sf::Color(255, 50, 50);
+    inline const sf::Color ORANGE = sf::Color(255, 128,  0);
+    inline const sf::Color BROWN = sf::Color(145, 108,  70);
+    inline const sf::Color DARKBROWN = sf::Color(101, 67,  31);
     inline const sf::Color BACKGROUND_COLOR = sf::Color(50, 50, 75);
 
     class UtilsSfml {
