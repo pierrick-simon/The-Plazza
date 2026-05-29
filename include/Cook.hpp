@@ -26,7 +26,7 @@ namespace Plazza {
 
             void start() { _thread = std::thread([this]() { run(); }); };
 
-            void join() { _thread.detach(); };
+            void join() { _thread.joinable(); };
 
             bool isActive() { return _active; };
 

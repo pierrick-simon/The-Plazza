@@ -39,6 +39,7 @@ namespace Plazza {
             cook.join();
         }
         _chef.join();
+        exit(0);
     }
 
     void Kitchen::run(int fd, double multiplier,
