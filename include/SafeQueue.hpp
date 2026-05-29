@@ -12,6 +12,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <iostream>
+#include "Exception.hpp"
 
 namespace Plazza {
 
@@ -25,13 +26,21 @@ namespace Plazza {
                 _cond_var.notify_one();
             }
 
+            void shutdown()
+            {
+                std::unique_lock lock(_mut);
+                _shutdown = true;
+                _cond_var.notify_all();
+            }
+
             T pop()
             {
                 std::unique_lock lock(_mut);
                 _cond_var.wait(lock, [this]() {
-                    return this->_queue.empty() == false;
+                    return !_queue.empty() || _shutdown;
                 });
-
+                if (_shutdown && _queue.empty())
+                    throw SafeQueueException("Queue shutdown");
                 auto value = _queue.front();
                 _queue.pop();
                 return value;
@@ -40,10 +49,17 @@ namespace Plazza {
             bool empty() { return _queue.empty(); }
             std::size_t size() { return _queue.size(); }
 
+            class SafeQueueException : public PlazzaException {
+                public:
+                    SafeQueueException(std::string str)
+                        : PlazzaException("SafeQueue Error: " + str) {};
+            };
+
         private:
             std::queue<T> _queue;
             std::condition_variable _cond_var;
             std::mutex _mut;
+            bool _shutdown = false;
     };
 };
 
