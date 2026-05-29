@@ -12,12 +12,13 @@ set(MAIN
 )
 
 set(SRCS
+    ../src/Reception.cpp
     ../src/Kitchen.cpp
     ../src/Connect.cpp
-    ../src/Reception.cpp
     ../src/Utils.cpp
     ../src/Cook.cpp
     ../src/Chef.cpp
+    ../src/SafeStock.cpp
     ../src/IngredientMap.cpp
 )
 
@@ -25,6 +26,7 @@ set(BONUS_SRCS
     src/Plazza.cpp
     src/Command.cpp
     src/AButton.cpp
+    src/KitchenDisplay.cpp
 )
 
 set(HEADERS

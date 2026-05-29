@@ -39,7 +39,6 @@ namespace Plazza {
         _reception.setMultiplier(multiplier);
         _reception.setNbCook(nbCook);
         _reception.setRestock(restock);
-
         _window.setFramerateLimit(FPS);
         _window.setView(_view);
         _rec.setSize({WINDOW_SIZE_X, WINDOW_SIZE_Y});
