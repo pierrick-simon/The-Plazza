@@ -229,7 +229,6 @@ namespace Plazza {
             float col = _kitchenFd.size() % NB_X_KITCHEN;
             float line = (_kitchenFd.size() - col) / NB_X_KITCHEN;
             auto max = GAP + (GAP * 2.0 + BOX_Y) * line - WINDOW_SIZE_Y;
-            std::cout << max << std::endl;
             if (_pos.y > max)
                 _pos.y = max;
             if (_pos.y < 0.0)

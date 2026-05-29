@@ -36,6 +36,7 @@ namespace Plazza {
         _ipc.send(CLOSE);
         _loop.store(false);
         _orders.shutdown();
+        _finishedOrders.shutdown();
         for (auto &cook: _cooks) {
             cook.join();
         }

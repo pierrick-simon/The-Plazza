@@ -25,7 +25,12 @@ Plazza::Cook::Cook(SafeQueue<Utils::Pizza> &orders,
 void Plazza::Cook::run()
 {
     while (_loop.load()) {
-        auto front = _orders.pop();
+        Utils::Pizza front;
+        try {
+            front = _orders.pop();
+        } catch (SafeQueue<Utils::Pizza>::SafeQueueException &) {
+            return;
+        }
 
         _active = true;
 
