@@ -26,6 +26,7 @@ namespace Plazza {
         double _elapsed;
         int _current;
         sf::Vector2f _pos;
+        int _forward;
     };
 
     class KitchenDisplay {
@@ -95,6 +96,7 @@ namespace Plazza {
             constexpr static float CHEF_MIN_POS_X = GAP + CHEF_RECT_X * CHEF_SCALE / 2.0;
             constexpr static float CHEF_MAX_POS_X = 350 - CHEF_RECT_X * CHEF_SCALE / 2.0;
             constexpr static float CHEF_WIDTH = CHEF_MAX_POS_X - CHEF_MIN_POS_X;
+            constexpr static float CHEF_WALK = 10;
 
             constexpr static std::string_view FLOOR = "public/floor.jpg";
             constexpr static float FLOOR_HEIGHT = 100;

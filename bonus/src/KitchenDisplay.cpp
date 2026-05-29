@@ -27,7 +27,7 @@ namespace Plazza {
         _wall.setTexture(_wallTexture);
         _wall.setScale(WALL_SCALE_X, WALL_SCALE_Y);
         for (std::size_t i = 0; i < _nbCook; i++)
-            _cooks.push_back({0, 0, {}});
+            _cooks.push_back({0, 0, {0 , FLOOR_POS_Y}, i % 2 == 0 ? 1 : -1});
         _ingredient.setScale(INGREDIANT_SCALE, INGREDIANT_SCALE);
         _ingredient.setOrigin(INGREDIANT_REAL_SIZE / 2.0, INGREDIANT_REAL_SIZE / 2.0);
         _ingredientTexture.emplace(Utils::DOUGH, sf::Texture());
@@ -219,10 +219,12 @@ namespace Plazza {
                 if (_cooks[i]._current == CHEF_NB_SPRITE)
                     _cooks[i]._current = 0;
                 _cooks[i]._elapsed = 0;
+                _cooks[i]._pos.y += 1 * _cooks[i]._forward;
+                if (_cooks[i]._pos.y > FLOOR_POS_Y + CHEF_WALK || _cooks[i]._pos.y < FLOOR_POS_Y - CHEF_WALK)
+                    _cooks[i]._forward *= -1;
             }
-            _cooks[i]._pos = sf::Vector2f(_pos.x + float(i) / float(_cooks.size()) * CHEF_WIDTH + CHEF_MIN_POS_X, _pos.y + FLOOR_POS_Y);
             _chef.setOrigin(sf::Vector2f(CHEF_RECT_X / 2.0, CHEF_RECT_Y * CHEF_SCALE + 50));
-            _chef.setPosition(_cooks[i]._pos);
+            _chef.setPosition(sf::Vector2f(_pos.x + float(i) / float(_cooks.size()) * CHEF_WIDTH + CHEF_MIN_POS_X, _pos.y + _cooks[i]._pos.y));
             _chef.setTextureRect({CHEF_RECT_X * _cooks[i]._current, 0, CHEF_RECT_X, CHEF_RECT_Y});
             win.draw(_chef);
         }
