@@ -55,15 +55,8 @@ namespace Plazza {
                 return value;
             }
 
-            bool empty() {
-                std::unique_lock lock(_mut);
-                return _queue.empty();
-            }
-
-            std::size_t size() {
-                std::unique_lock lock(_mut);
-                return _queue.size();
-            }
+            bool empty() { return _queue.empty(); }
+            std::size_t size() { return _queue.size(); }
 
             class SafeQueueException : public PlazzaException {
                 public:
