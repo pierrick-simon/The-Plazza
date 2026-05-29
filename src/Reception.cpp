@@ -58,7 +58,7 @@ namespace Plazza {
         ipc.send(packet);
         ++count;
         logMsg("Kitchen[" + std::to_string(id) + "] Add "
-            + Utils::pizzaToString(pizza) + " to the list." + std::to_string(count));
+            + Utils::pizzaToString(pizza) + " to the list.");
         status = true;
     }
 
@@ -140,7 +140,7 @@ namespace Plazza {
         packet >> pizza;
         --find->second.second;
         logMsg("Kitchen[" + std::to_string(id) + "] Pizza "
-            + Utils::pizzaToString(pizza) + " is ready to be served." + std::to_string(find->second.second));
+            + Utils::pizzaToString(pizza) + " is ready to be served.");
     }
 
     void Reception::receiveCooksInfo(IPC &ipc)
