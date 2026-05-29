@@ -33,7 +33,11 @@ void Plazza::Cook::run()
         }
         _active = true;
         auto recipe = Kitchen::recipes.at(front.first);
-        _ingredients.consume(recipe.first);
+        try {
+            _ingredients.consume(recipe.first);
+        } catch (SafeStock::SafeStockException &) {
+            return;
+        }
         auto time = recipe.second * _multiplier * 1000;
         std::this_thread::sleep_for(
             std::chrono::milliseconds(static_cast<int>(time)));

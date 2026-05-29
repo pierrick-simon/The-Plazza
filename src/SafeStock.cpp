@@ -28,16 +28,25 @@ namespace Plazza {
         std::unique_lock lock(_mut);
         for (auto i = 0; i < v; ++i) {
             _cond_var.wait(lock, [this]() {
-                return this->_value != 0;
+                return this->_value != 0 || _shutdown;
             });
+            if (_value == 0 && _shutdown)
+                throw SafeStockException("Stock shutdown");
             --_value;
         }
         return *this;
     }
 
+    void SafeStock::shutdown()
+    {
+        std::unique_lock lock(_mut);
+        _shutdown = true;
+        _cond_var.notify_all();
+    }
+
     std::size_t SafeStock::seek()
     {
-        std::unique_lock lock(_mut); // en vrai a voir sah y'a un monde ou y'a pas besoin
+        std::unique_lock lock(_mut);
         return _value;
     }
 

@@ -24,8 +24,18 @@ namespace Plazza {
 
     void IngredientMap::consume(const Utils::Ingredient &ingredients)
     {
+        try {
         for (auto &ingredient: ingredients)
             _map[ingredient.first] >> ingredient.second;
+        } catch (SafeStock::SafeStockException &e) {
+            throw e;
+        }
+    }
+
+    void IngredientMap::shutdown()
+    {
+        for (auto &item: _map)
+            item.second.shutdown();
     }
     
     Utils::Ingredient IngredientMap::seek()

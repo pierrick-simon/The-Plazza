@@ -25,6 +25,8 @@ namespace Plazza {
             
             Utils::Ingredient seek();
 
+            void shutdown();
+
         private:
             std::unordered_map<Utils::IngredientType, SafeStock> _map;
     };
