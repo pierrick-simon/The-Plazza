@@ -25,6 +25,12 @@ namespace Plazza {
     inline const sf::Color DARKBROWN = sf::Color(101, 67,  31);
     inline const sf::Color BACKGROUND_COLOR = sf::Color(50, 50, 75);
 
+    constexpr static float GAP = 5;
+    constexpr static std::size_t NB_X_KITCHEN = 5;
+    constexpr static std::size_t NB_Y_KITCHEN = 2;
+    constexpr static float BOX_X = WINDOW_SIZE_X / float(NB_X_KITCHEN) - GAP * 2;
+    constexpr static float BOX_Y = WINDOW_SIZE_Y / float(NB_Y_KITCHEN)  - GAP * 2;
+
     class UtilsSfml {
         public:
             static sf::Color colorOffset(const sf::Color &color, int offset)

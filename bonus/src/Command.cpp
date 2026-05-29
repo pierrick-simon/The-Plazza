@@ -20,6 +20,7 @@ namespace Plazza {
         _sprite.setTexture(_texture);
         _sprite.setOrigin(CHIEF_X / 2, CHIEF_Y);
         _sprite.setPosition(WINDOW_SIZE_X / 4, WINDOW_SIZE_Y);
+        _clock.restart();
     }
 
     void Command::draw(sf::RenderWindow &win)
@@ -39,6 +40,12 @@ namespace Plazza {
         _pizzaSizeDrop.event(mousePos, event);
         _pizzaTypeDrop.event(mousePos, event);
         std::size_t i = 0;
+        if (_pizzaTypeDrop.getPush()) {
+            _clock.restart();
+            return;
+        }
+        if (_clock.getElapsedTime().asMilliseconds() < 500)
+            return;
         for (auto &validate: _validate) {
             validate.click(mousePos, event);
             if (validate.getPush()) {

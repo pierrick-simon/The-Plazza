@@ -9,7 +9,7 @@
 
 namespace Plazza {
     KitchenDisplay::KitchenDisplay(sf::Font &font, std::size_t id, std::size_t nbCook)
-        : _id(id), _nbCook(nbCook)
+        : _id(id), _nbCook(nbCook), _info({std::vector<bool>(nbCook), {}})
     {
         _text.setFont(font);
         _pos = {0, 0};
@@ -31,8 +31,13 @@ namespace Plazza {
         _clock.restart();
     }
 
-    void KitchenDisplay::draw(sf::RenderWindow &win)
+    void KitchenDisplay::draw(sf::RenderWindow &win, sf::Vector2f pos)
     {
+        _oven.setTexture(_ovenTexture);
+        _chef.setTexture(_chefTexture);
+        _floor.setTexture(_floorTexture);
+        _wall.setTexture(_wallTexture);
+        _pos = pos;
         auto elapsed = _clock.getElapsedTime().asMilliseconds();
         _ovenElapsed += elapsed;
         for (auto &cook: _cooks)
@@ -42,8 +47,8 @@ namespace Plazza {
         drawTop(win);
         drawBottom(win);
         drawShelf(win);
-        drawOven(win);
         drawChef(win);
+        drawOven(win);
     }
 
     void KitchenDisplay::drawBox(sf::RenderWindow &win)

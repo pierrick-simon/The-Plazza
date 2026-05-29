@@ -12,9 +12,7 @@ set(MAIN
 )
 
 set(SRCS
-    ../src/Reception.cpp
     ../src/Kitchen.cpp
-    ../src/Connect.cpp
     ../src/Utils.cpp
     ../src/Cook.cpp
     ../src/Chef.cpp
@@ -27,6 +25,8 @@ set(BONUS_SRCS
     src/Command.cpp
     src/AButton.cpp
     src/KitchenDisplay.cpp
+    src/Reception.cpp
+    src/Connect.cpp
 )
 
 set(HEADERS

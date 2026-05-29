@@ -31,7 +31,7 @@ namespace Plazza {
         public:
             KitchenDisplay(sf::Font &font, std::size_t id, std::size_t nbCook);
 
-            void draw(sf::RenderWindow &win);
+            void draw(sf::RenderWindow &win, sf::Vector2f pos);
 
             void update(KitchenInfo info) {_info = info;}
 

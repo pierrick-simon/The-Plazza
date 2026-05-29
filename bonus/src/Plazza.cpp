@@ -18,6 +18,7 @@ namespace Plazza {
         "Plazza", sf::Style::Close | sf::Style::Resize)),
         _view(sf::FloatRect(0.0, 0.0, WINDOW_SIZE_X, WINDOW_SIZE_Y)),
         _font(loadFromFile("public/Font.ttf")),
+        _reception(_font),
         _command(_font)
     {
         if (args.size() != NBARGS) {
@@ -59,6 +60,7 @@ namespace Plazza {
             _window.clear(sf::Color::Black);
             _window.setView(_view);
             _window.draw(_rec);
+            _reception.draw(_window);
             if (_command.getShow())
                 _command.draw(_window);
             _window.display();
@@ -74,6 +76,7 @@ namespace Plazza {
             if (_command.getShow())
                 _command.event(mousePos, event, _reception);
             handleResize(event);
+            _reception.event(event);
             if (event.type == sf::Event::Closed ||
                     (event.type == sf::Event::KeyPressed
                         && event.key.code == sf::Keyboard::Escape))

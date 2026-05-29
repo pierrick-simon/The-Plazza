@@ -60,7 +60,7 @@ namespace Plazza {
             unsigned int _textSize;
             std::string _str;
             sf::Color _color;
-            bool _push;
+            bool _push = false;
     };
 }
 

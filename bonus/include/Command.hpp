@@ -37,6 +37,7 @@ namespace Plazza {
             sf::Text _text;
             sf::Texture _texture;
             sf::Sprite _sprite;
+            sf::Clock _clock;
             DropDownButton<Utils::PizzaSize> _pizzaSizeDrop;
             DropDownButton<Utils::PizzaType> _pizzaTypeDrop;
             DropDownButton<std::size_t> _pizzaNbDrop;

@@ -107,6 +107,7 @@ namespace Plazza {
             }
 
             std::optional<T> getSelect() {return _select;}
+            bool getPush() {return _push;}
 
         private:
             sf::Vector2f _pos;

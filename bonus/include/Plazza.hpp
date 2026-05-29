@@ -18,7 +18,6 @@
 namespace Plazza {
     class Plazza {
         public:
-
             enum Args {
                 MULTIPLIER,
                 NBCOOK,
@@ -34,13 +33,13 @@ namespace Plazza {
             void handleResize(sf::Event event);
             sf::Font loadFromFile(std::string file);
 
-            Reception _reception;
-
+            
             sf::RenderWindow _window;
             sf::View _view;
             sf::RectangleShape _rec;
             sf::Font _font;
-
+            
+            Reception _reception;
             Command _command;
     };
 }
