@@ -64,10 +64,14 @@ namespace Plazza {
 
     void Reception::sendOrder(Utils::Pizza pizza)
     {
-        for (auto &kitchen: _kitchenFd) {
-            if (kitchen.second.second < _nbCook * 2)
-                return sendOrderToKitchen(kitchen.second.first,
-                    kitchen.first, pizza, kitchen.second.second);
+        if (!_kitchenFd.empty()) {
+            auto smalest = std::min_element(std::begin(_kitchenFd), std::end(_kitchenFd),
+                [](const auto& l, const auto& r) { return l.second.second < r.second.second; });
+            if (smalest->second.second >= _nbCook * 2)
+                smalest = openNewKitchen();
+            sendOrderToKitchen(_kitchenFd.at(smalest->first).first,
+                smalest->first, pizza, _kitchenFd.at(smalest->first).second);
+            return;
         }
         auto kitchen = openNewKitchen();
         sendOrderToKitchen(kitchen->second.first,
