@@ -38,8 +38,14 @@ namespace Plazza {
             double _multiplier;
             bool _active = false;
             std::atomic<bool> &_loop;
+            Utils::Clock _clock;
+            bool _cooking = false;
+            double _time = 0;
+            Utils::Pizza _pizza;
 
             void run();
+            void cooking();
+            bool waiting();
     };
 };
 

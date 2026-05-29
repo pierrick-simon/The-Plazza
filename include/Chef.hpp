@@ -28,8 +28,9 @@ namespace Plazza {
         private:
             std::thread _thread;
             IngredientMap &_ingredients;
-            std::size_t _restock;
+            double _restock;
             std::atomic<bool> &_loop;
+            Utils::Clock _clock;
 
             void run();
     };
